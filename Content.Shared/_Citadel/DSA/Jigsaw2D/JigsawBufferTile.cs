@@ -4,13 +4,13 @@ namespace Content.Shared._Citadel.DSA.Jigsaw2D;
 /// A tile that's in a buffer.
 /// Edge orientation will be automatically fitted to the buffer & the current orientation.
 /// </summary>
-public sealed class BufferTile<TPieceData, TTileData, TEdgeData> where TPieceData : struct
+public sealed class JigsawBufferTile<TPieceData, TTileData, TEdgeData> where TPieceData : struct
     where TTileData : struct
     where TEdgeData : struct
 {
     public TTileData Data;
 
-    public BufferPlacement<TPieceData, TTileData, TEdgeData>? Placement;
+    public JigsawBufferPlacement<TPieceData, TTileData, TEdgeData>? Placement;
 
     /**
      * The weight of this tile as a hint to solvers.
@@ -26,13 +26,13 @@ public sealed class BufferTile<TPieceData, TTileData, TEdgeData> where TPieceDat
     /// Constructs a buffer tile.
     /// </summary>
     /// <param name="placement">The piece being placed.</param>
-    /// <param name="tile">The tile on the piece</param>
-    /// <param name="orientation">Orientation. This will automatically handle rotation of edge data.</param>
+    /// <param name="jigsawTile">The tile on the piece</param>
+    /// <param name="jigsawOrientation">Orientation. This will automatically handle rotation of edge data.</param>
     /// <param name="x">X on the buffer this is being placed on</param>
     /// <param name="y">Y on the buffer this is being placed on</param>
-    internal BufferTile(BufferPlacement<TPieceData, TTileData, TEdgeData> placement,
-        Tile<TTileData, TEdgeData> tile,
-        Orientation orientation,
+    internal JigsawBufferTile(JigsawBufferPlacement<TPieceData, TTileData, TEdgeData> placement,
+        JigsawTile<TTileData, TEdgeData> jigsawTile,
+        JigsawOrientation jigsawOrientation,
         int x,
         int y)
     {
@@ -53,9 +53,9 @@ public sealed class BufferTile<TPieceData, TTileData, TEdgeData> where TPieceDat
     public int Y { get; }
 
     // @formatter:off
-    public Edge<TEdgeData> North;
-    public Edge<TEdgeData> East;
-    public Edge<TEdgeData> South;
-    public Edge<TEdgeData> West;
+    public JigsawEdge<TEdgeData> North;
+    public JigsawEdge<TEdgeData> East;
+    public JigsawEdge<TEdgeData> South;
+    public JigsawEdge<TEdgeData> West;
     // @formatter:on
 }

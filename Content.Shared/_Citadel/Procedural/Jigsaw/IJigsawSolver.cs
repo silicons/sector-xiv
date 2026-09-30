@@ -15,12 +15,12 @@ public interface IJigsawSolver<TSolverParams, TPieceData, TTileData, TEdgeData>
     /// Attempts to place a single piece.
     /// This is often far less optimized than placing multiple pieces.
     /// </summary>
-    /// <param name="buffer"></param>
-    /// <param name="piece"></param>
+    /// <param name="jigsawBuffer"></param>
+    /// <param name="jigsawPiece"></param>
     /// <param name="solverParams"></param>
     /// <returns></returns>
-    BufferPlacement<TPieceData, TTileData, TEdgeData> PlaceStandalonePiece(
-        Buffer<TPieceData, TTileData, TEdgeData> buffer,
-        Piece<TPieceData, TTileData, TEdgeData> piece,
+    JigsawBufferPlacement<TPieceData, TTileData, TEdgeData> PlaceStandalonePiece(
+        JigsawBuffer<TPieceData, TTileData, TEdgeData> jigsawBuffer,
+        JigsawPiece<TPieceData, TTileData, TEdgeData> jigsawPiece,
         TSolverParams solverParams);
 }

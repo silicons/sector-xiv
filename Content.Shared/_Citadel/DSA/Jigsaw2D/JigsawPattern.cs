@@ -7,14 +7,14 @@ namespace Content.Shared._Citadel.DSA.Jigsaw2D;
 /// </summary>
 /// <typeparam name="TTileData"></typeparam>
 /// <typeparam name="TEdgeData"></typeparam>
-public sealed class Pattern<TTileData, TEdgeData> : ICloneable
+public sealed class JigsawPattern<TTileData, TEdgeData> : ICloneable
     where TTileData : struct
     where TEdgeData : struct
 {
     /// <summary>
     /// A null-ref that may be returned.
     /// </summary>
-    private static Tile<TTileData, TEdgeData>? _nullTile;
+    private static JigsawTile<TTileData, TEdgeData>? _nullTile;
 
     /// <summary>
     /// Tiles list. Created and sized at init.
@@ -22,26 +22,26 @@ public sealed class Pattern<TTileData, TEdgeData> : ICloneable
     /// Row-major, index = (y * width) + x.
     /// Indices start from 0.
     /// </summary>
-    private readonly Tile<TTileData, TEdgeData>?[] _tiles;
+    private readonly JigsawTile<TTileData, TEdgeData>?[] _tiles;
 
     /// <summary>
     /// Creates a pattern with a given size.
     /// </summary>
     /// <param name="width"></param>
     /// <param name="height"></param>
-    public Pattern(int width, int height)
+    public JigsawPattern(int width, int height)
     {
         Width = width;
         Height = height;
 
-        _tiles = new Tile<TTileData, TEdgeData>?[width * height];
+        _tiles = new JigsawTile<TTileData, TEdgeData>?[width * height];
     }
 
     /// <summary>
     /// Copy constructor.
     /// </summary>
     /// <param name="clone"></param>
-    private Pattern(Pattern<TTileData, TEdgeData> clone)
+    private JigsawPattern(JigsawPattern<TTileData, TEdgeData> clone)
         : this(clone.Width, clone.Height)
     {
         for (var i = 0; i < clone._tiles.Length; i++)
@@ -55,13 +55,13 @@ public sealed class Pattern<TTileData, TEdgeData> : ICloneable
 
     public object Clone()
     {
-        return new Pattern<TTileData, TEdgeData>(this);
+        return new JigsawPattern<TTileData, TEdgeData>(this);
     }
 
-    public bool PlaceTile(Tile<TTileData, TEdgeData> tile,
+    public bool PlaceTile(JigsawTile<TTileData, TEdgeData> jigsawTile,
         int x,
         int y,
-        out Tile<TTileData, TEdgeData>? replaced)
+        out JigsawTile<TTileData, TEdgeData>? replaced)
     {
         if (!InBounds(x, y))
         {
@@ -71,11 +71,11 @@ public sealed class Pattern<TTileData, TEdgeData> : ICloneable
 
         var index = IndexOf(x, y);
         replaced = _tiles[index];
-        _tiles[index] = tile;
+        _tiles[index] = jigsawTile;
         return true;
     }
 
-    public ref Tile<TTileData, TEdgeData>? GetTile(int x, int y)
+    public ref JigsawTile<TTileData, TEdgeData>? GetTile(int x, int y)
     {
         if (!InBounds(x, y))
             return ref _nullTile;

@@ -23,7 +23,7 @@ public interface IJigsawAdjudicator<TPieceData, TTileData, TEdgeData>
     /// <param name="alpha"></param>
     /// <param name="beta"></param>
     /// <returns></returns>
-    bool CanEdgeJoin(Edge<TEdgeData> alpha, Edge<TEdgeData> beta);
+    bool CanEdgeJoin(JigsawEdge<TEdgeData> alpha, JigsawEdge<TEdgeData> beta);
 
     /// <summary>
     /// Check if two jigsaw edges may touch at all.
@@ -31,5 +31,5 @@ public interface IJigsawAdjudicator<TPieceData, TTileData, TEdgeData>
     /// <param name="alpha"></param>
     /// <param name="beta"></param>
     /// <returns></returns>
-    bool CanEdgeTouch(Edge<TEdgeData> alpha, Edge<TEdgeData> beta);
+    bool CanEdgeTouch(JigsawEdge<TEdgeData> alpha, JigsawEdge<TEdgeData> beta);
 }

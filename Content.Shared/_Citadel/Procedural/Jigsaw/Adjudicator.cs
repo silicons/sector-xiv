@@ -7,17 +7,17 @@ public sealed class Adjudicator<TPieceData, TTileData> : IJigsawAdjudicator<
     where TPieceData : struct
     where TTileData : struct
 {
-    public bool CanEdgeJoin(Edge<EdgeData> alpha, Edge<EdgeData> beta)
+    public bool CanEdgeJoin(JigsawEdge<EdgeData> alpha, JigsawEdge<EdgeData> beta)
     {
         return DoEdgesMatch(alpha, beta);
     }
 
-    public bool CanEdgeTouch(Edge<EdgeData> alpha, Edge<EdgeData> beta)
+    public bool CanEdgeTouch(JigsawEdge<EdgeData> alpha, JigsawEdge<EdgeData> beta)
     {
         return DoEdgesMatch(alpha, beta);
     }
 
-    private bool DoEdgesMatch(Edge<EdgeData> alpha, Edge<EdgeData> beta)
+    private bool DoEdgesMatch(JigsawEdge<EdgeData> alpha, JigsawEdge<EdgeData> beta)
     {
         // relatively dumb algorithm;
         // we only check for require/forbid edges.

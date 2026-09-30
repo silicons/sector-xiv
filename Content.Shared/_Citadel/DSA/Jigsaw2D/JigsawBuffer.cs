@@ -14,14 +14,14 @@ namespace Content.Shared._Citadel.DSA.Jigsaw2D;
 /// Data stored on tiles.
 /// </typeparam>
 /// <typeparam name="TEdgeData">Data stored on tile edges</typeparam>
-public sealed class Buffer<TPieceData, TTileData, TEdgeData>
+public sealed class JigsawBuffer<TPieceData, TTileData, TEdgeData>
     where TPieceData : struct
     where TTileData : struct
     where TEdgeData : struct
 {
-    private static BufferTile<TPieceData, TTileData, TEdgeData>? _nullTile;
-    private readonly List<BufferPlacement<TPieceData, TTileData, TEdgeData>> _placed;
-    private BufferTile<TPieceData, TTileData, TEdgeData>?[] _tiles;
+    private static JigsawBufferTile<TPieceData, TTileData, TEdgeData>? _nullTile;
+    private readonly List<JigsawBufferPlacement<TPieceData, TTileData, TEdgeData>> _placed;
+    private JigsawBufferTile<TPieceData, TTileData, TEdgeData>?[] _tiles;
 
     /// <summary>
     /// Constructs a buffer with a given size.
@@ -34,22 +34,22 @@ public sealed class Buffer<TPieceData, TTileData, TEdgeData>
     /// <typeparam name="TPieceData">
     /// Data stored on placed pieces.
     /// </typeparam>
-    public Buffer(int width, int height)
+    public JigsawBuffer(int width, int height)
     {
         Width = width;
         Height = height;
 
         _placed = [];
-        _tiles = new BufferTile<TPieceData, TTileData, TEdgeData>?[width * height];
+        _tiles = new JigsawBufferTile<TPieceData, TTileData, TEdgeData>?[width * height];
     }
 
     public int Width { get; }
 
     public int Height { get; }
 
-    public ImmutableList<BufferPlacement<TPieceData, TTileData, TEdgeData>> Placed => _placed.ToImmutableList();
+    public ImmutableList<JigsawBufferPlacement<TPieceData, TTileData, TEdgeData>> Placed => _placed.ToImmutableList();
 
-    public ref BufferTile<TPieceData, TTileData, TEdgeData>? GetTile(int x, int y)
+    public ref JigsawBufferTile<TPieceData, TTileData, TEdgeData>? GetTile(int x, int y)
     {
         if (!inBounds(x, y))
             return ref _nullTile;
