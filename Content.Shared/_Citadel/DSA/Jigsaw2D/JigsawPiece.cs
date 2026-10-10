@@ -25,7 +25,6 @@ public sealed class JigsawPiece<TPieceData, TTileData, TEdgeData>(JigsawPattern<
 
     public object Clone()
     {
-#warning impl
-        throw new NotImplementedException();
+#warning implement this
     }
 }
