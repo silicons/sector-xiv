@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace Content.Shared._Citadel.Arcanima.Engine;
 
 /**
@@ -8,4 +10,12 @@ namespace Content.Shared._Citadel.Arcanima.Engine;
  */
 public sealed class Program
 {
+    public Program(ProgramBuilder builder)
+    {
+    }
+
+    /**
+     * Glyph chains by ID.
+     */
+    public ImmutableDictionary<GlyphChainId, GlyphChain> GlyphChains { get; }
 }

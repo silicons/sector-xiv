@@ -4,6 +4,12 @@
 
 ## Engine
 
+TODO: Re-document this after the dust settles.
+
+### Glyphs
+
+The smallest unit of Arcanima is a glyph. Glyphs are the 'instructions' that make up a program.
+
 ### Programs
 
 A program is a compiled Arcanima program.
