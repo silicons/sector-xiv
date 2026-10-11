@@ -11,48 +11,35 @@ internal static class ScalarArithmetic
         if (context.Stack.Size < 2)
             return new ExecutionResult { Error = new InsufficientArgumentsError(2, context.Stack.Size) };
 
-        var a = context.Stack.PeekFromTop(1);
-        var b = context.Stack.PeekFromTop(0);
-        ValueBase result;
+        var first = context.Stack.PeekFromTop(1).GetRef<ValueBase>();
+        var second = context.Stack.PeekFromTop(0).GetRef<ValueBase>();
+        ValueBase? result = (first, second) switch
+        {
+            (Number a, Number b) => new Number(operation(a.Value, b.Value)),
+            (Vec2 a, Number b) => new Vec2(operation(a.X, b.Value), operation(a.Y, b.Value)),
+            (Vec2 a, Vec2 b) => new Vec2(operation(a.X, b.X), operation(a.Y, b.Y)),
+            (Vec3 a, Number b) => new Vec3(operation(a.X, b.Value), operation(a.Y, b.Value), operation(a.Z, b.Value)),
+            (Vec3 a, Vec3 b) => new Vec3(operation(a.X, b.X), operation(a.Y, b.Y), operation(a.Z, b.Z)),
+            (Vec4 a, Number b) => new Vec4(operation(a.X, b.Value), operation(a.Y, b.Value), operation(a.Z, b.Value), operation(a.W, b.Value)),
+            (Vec4 a, Vec4 b) => new Vec4(operation(a.X, b.X), operation(a.Y, b.Y), operation(a.Z, b.Z), operation(a.W, b.W)),
+            _ => null,
+        };
 
-        if (a.Is<Number>())
+        if (result == null)
         {
-            if (!b.Is<Number>())
+            Type[]? expected = first switch
             {
-                return new ExecutionResult
-                {
-                    Error = new BadInputTypeError(b.GetRef<ValueBase>().GetType(), [typeof(Number)], 0),
-                };
-            }
-
-            result = new Number(operation(a.GetRef<Number>().Value, b.GetRef<Number>().Value));
-        }
-        else if (a.Is<Vec2>())
-        {
-            var vector = a.GetRef<Vec2>();
-            if (b.Is<Number>())
-            {
-                var scalar = b.GetRef<Number>().Value;
-                result = new Vec2(operation(vector.X, scalar), operation(vector.Y, scalar));
-            }
-            else if (b.Is<Vec2>())
-            {
-                var other = b.GetRef<Vec2>();
-                result = new Vec2(operation(vector.X, other.X), operation(vector.Y, other.Y));
-            }
-            else
-            {
-                return new ExecutionResult
-                {
-                    Error = new BadInputTypeError(b.GetRef<ValueBase>().GetType(), [typeof(Number), typeof(Vec2)], 0),
-                };
-            }
-        }
-        else
-        {
+                Number => [typeof(Number)],
+                Vec2 => [typeof(Number), typeof(Vec2)],
+                Vec3 => [typeof(Number), typeof(Vec3)],
+                Vec4 => [typeof(Number), typeof(Vec4)],
+                _ => null,
+            };
             return new ExecutionResult
             {
-                Error = new BadInputTypeError(a.GetRef<ValueBase>().GetType(), [typeof(Number), typeof(Vec2)], 1),
+                Error = expected != null
+                    ? new BadInputTypeError(second.GetType(), expected, 0)
+                    : new BadInputTypeError(first.GetType(), [typeof(Number), typeof(Vec2), typeof(Vec3), typeof(Vec4)], 1),
             };
         }
 
