@@ -6,7 +6,8 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Arithmetic;
 
 internal static class ScalarArithmetic
 {
-    public static ExecutionResult Execute(ExecutionContext context, Func<double, double, double> operation)
+    public static ExecutionResult Execute<TOperation>(ExecutionContext context)
+        where TOperation : struct, IOperation
     {
         if (context.Stack.Size < 2)
             return new ExecutionResult { Error = new InsufficientArgumentsError(2, context.Stack.Size) };
@@ -15,13 +16,13 @@ internal static class ScalarArithmetic
         var second = context.Stack.PeekFromTop(0).GetRef<ValueBase>();
         ValueBase? result = (first, second) switch
         {
-            (Number a, Number b) => new Number(operation(a.Value, b.Value)),
-            (Vec2 a, Number b) => new Vec2(operation(a.X, b.Value), operation(a.Y, b.Value)),
-            (Vec2 a, Vec2 b) => new Vec2(operation(a.X, b.X), operation(a.Y, b.Y)),
-            (Vec3 a, Number b) => new Vec3(operation(a.X, b.Value), operation(a.Y, b.Value), operation(a.Z, b.Value)),
-            (Vec3 a, Vec3 b) => new Vec3(operation(a.X, b.X), operation(a.Y, b.Y), operation(a.Z, b.Z)),
-            (Vec4 a, Number b) => new Vec4(operation(a.X, b.Value), operation(a.Y, b.Value), operation(a.Z, b.Value), operation(a.W, b.Value)),
-            (Vec4 a, Vec4 b) => new Vec4(operation(a.X, b.X), operation(a.Y, b.Y), operation(a.Z, b.Z), operation(a.W, b.W)),
+            (Number a, Number b) => new Number(TOperation.Apply(a.Value, b.Value)),
+            (Vec2 a, Number b) => new Vec2(TOperation.Apply(a.X, b.Value), TOperation.Apply(a.Y, b.Value)),
+            (Vec2 a, Vec2 b) => new Vec2(TOperation.Apply(a.X, b.X), TOperation.Apply(a.Y, b.Y)),
+            (Vec3 a, Number b) => new Vec3(TOperation.Apply(a.X, b.Value), TOperation.Apply(a.Y, b.Value), TOperation.Apply(a.Z, b.Value)),
+            (Vec3 a, Vec3 b) => new Vec3(TOperation.Apply(a.X, b.X), TOperation.Apply(a.Y, b.Y), TOperation.Apply(a.Z, b.Z)),
+            (Vec4 a, Number b) => new Vec4(TOperation.Apply(a.X, b.Value), TOperation.Apply(a.Y, b.Value), TOperation.Apply(a.Z, b.Value), TOperation.Apply(a.W, b.Value)),
+            (Vec4 a, Vec4 b) => new Vec4(TOperation.Apply(a.X, b.X), TOperation.Apply(a.Y, b.Y), TOperation.Apply(a.Z, b.Z), TOperation.Apply(a.W, b.W)),
             _ => null,
         };
 
@@ -46,5 +47,31 @@ internal static class ScalarArithmetic
         context.Stack.Pop(2);
         context.Stack.Push(new ValueRef(result));
         return new ExecutionResult();
+    }
+
+    // Value-type specialization lets the JIT inline arithmetic without delegate dispatch.
+    public interface IOperation
+    {
+        static abstract double Apply(double a, double b);
+    }
+
+    public readonly struct Add : IOperation
+    {
+        public static double Apply(double a, double b) => a + b;
+    }
+
+    public readonly struct Subtract : IOperation
+    {
+        public static double Apply(double a, double b) => a - b;
+    }
+
+    public readonly struct Multiply : IOperation
+    {
+        public static double Apply(double a, double b) => a * b;
+    }
+
+    public readonly struct Divide : IOperation
+    {
+        public static double Apply(double a, double b) => a / b;
     }
 }

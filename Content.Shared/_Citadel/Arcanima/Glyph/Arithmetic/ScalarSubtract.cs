@@ -19,7 +19,7 @@ public sealed class ScalarSubtract : Engine.Glyph
 {
     public override ExecutionResult Execute(ExecutionContext context)
     {
-        return ScalarArithmetic.Execute(context, static (a, b) => a - b);
+        return ScalarArithmetic.Execute<ScalarArithmetic.Subtract>(context);
     }
 
     public override Engine.Glyph Copy()

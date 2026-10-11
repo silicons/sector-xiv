@@ -19,7 +19,7 @@ public sealed class ScalarAdd : Engine.Glyph
 {
     public override ExecutionResult Execute(ExecutionContext context)
     {
-        return ScalarArithmetic.Execute(context, static (a, b) => a + b);
+        return ScalarArithmetic.Execute<ScalarArithmetic.Add>(context);
     }
 
     public override Engine.Glyph Copy()
