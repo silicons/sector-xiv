@@ -1,3 +1,5 @@
+using Content.Shared._Citadel.Arcanima.Engine.Values;
+
 namespace Content.Shared._Citadel.Arcanima.Engine;
 
 /**
@@ -10,7 +12,7 @@ namespace Content.Shared._Citadel.Arcanima.Engine;
  */
 public sealed class Stack : ICloneable
 {
-    private readonly List<MemoryValue> _values = new();
+    private readonly List<ValueRef> _values = new();
 
     public int Size => _values.Count;
 
@@ -19,25 +21,25 @@ public sealed class Stack : ICloneable
         var clone = new Stack();
         foreach (var value in _values)
         {
-            clone.Push((MemoryValue)value.Clone());
+            clone.Push(value.Copy());
         }
 
         return clone;
     }
 
-    public void Push(MemoryValue value)
+    public void Push(ValueRef value)
     {
         _values.Add(value);
     }
 
-    public MemoryValue Pop()
+    public ValueRef Pop()
     {
         var value = Peek();
         _values.RemoveAt(_values.Count - 1);
         return value;
     }
 
-    public MemoryValue Peek()
+    public ValueRef Peek()
     {
         if (_values.Count == 0)
             throw new InvalidOperationException("The stack is empty.");
@@ -46,7 +48,7 @@ public sealed class Stack : ICloneable
     }
 
     /// <summary>Returns the value at a zero-based index from the top.</summary>
-    public MemoryValue PeekFromTop(int index)
+    public ValueRef PeekFromTop(int index)
     {
         if (index < 0 || index >= _values.Count)
             throw new ArgumentOutOfRangeException(nameof(index));
@@ -55,7 +57,7 @@ public sealed class Stack : ICloneable
     }
 
     /// <summary>Returns the value at a zero-based index from the bottom.</summary>
-    public MemoryValue PeekFromBottom(int index)
+    public ValueRef PeekFromBottom(int index)
     {
         if (index < 0 || index >= _values.Count)
             throw new ArgumentOutOfRangeException(nameof(index));

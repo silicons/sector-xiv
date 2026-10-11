@@ -1,3 +1,5 @@
+using Content.Shared._Citadel.Arcanima.Engine.Values;
+
 namespace Content.Shared._Citadel.Arcanima.Engine;
 
 /**
@@ -9,10 +11,8 @@ namespace Content.Shared._Citadel.Arcanima.Engine;
  * references instead of string comaprisons.
  * <br />
  * <br />
- * Types must also be declared in advance, allowing the program to be statically analyzed.
- * This is mostly for user convenience, but may allow for future optimizations.
  */
 public sealed class Memory
 {
-    private Dictionary<MemoryKey, MemoryValue> _memory = new();
+    private Dictionary<MemoryKey, ValueRef> _memory = new();
 }
