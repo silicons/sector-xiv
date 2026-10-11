@@ -6,6 +6,16 @@ namespace Content.Shared._Citadel.Arcanima.Engine;
 public ref struct ExecutionContext
 {
     /// <summary>
+    /// Program whose glyph chains may be targeted by a jump.
+    /// </summary>
+    public Program Program;
+
+    /// <summary>
+    /// Glyph chain currently being executed.
+    /// </summary>
+    public GlyphChain Chain;
+
+    /// <summary>
     /// Index of the glyph being executed in the glyph-chain.
     /// </summary>
     public int GlyphIndex;

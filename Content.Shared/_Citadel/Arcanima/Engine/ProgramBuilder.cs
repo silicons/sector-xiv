@@ -8,4 +8,5 @@ namespace Content.Shared._Citadel.Arcanima.Engine;
  */
 public sealed class ProgramBuilder
 {
+    public Dictionary<Identifier, GlyphChain> GlyphChains { get; } = new();
 }

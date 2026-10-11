@@ -12,6 +12,7 @@ public sealed class Program
 {
     public Program(ProgramBuilder builder)
     {
+        GlyphChains = builder.GlyphChains.ToImmutableDictionary();
     }
 
     /**

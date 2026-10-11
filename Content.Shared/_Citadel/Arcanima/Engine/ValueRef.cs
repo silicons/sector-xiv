@@ -6,23 +6,16 @@ namespace Content.Shared._Citadel.Arcanima.Engine;
 /// <br />
 /// This is called 'Ref' to make it explicit that copying this won't copy the value.
 /// </summary>
-public readonly struct ValueRef
+public readonly struct ValueRef(ValueBase data)
 {
-    private readonly ValueBase _data;
-
-    public ValueRef(ValueBase data)
-    {
-        _data = data;
-    }
-
     public readonly bool Is<T>() where T : ValueBase
     {
-        return _data is T;
+        return data is T;
     }
 
     public readonly bool GetIf<T>(out T? value) where T : ValueBase
     {
-        if (_data is T t)
+        if (data is T t)
         {
             value = t;
             return true;
@@ -34,9 +27,14 @@ public readonly struct ValueRef
 
     public T GetRef<T>() where T : ValueBase
     {
-        if (_data is T casted)
+        if (data is T casted)
             return casted;
         throw new InvalidOperationException($"ValueRef is not of type {typeof(T).Name}");
+    }
+
+    public T? GetMaybeRef<T>() where T : ValueBase
+    {
+        return data as T;
     }
 
     /// <summary>
@@ -45,11 +43,11 @@ public readonly struct ValueRef
     /// <returns></returns>
     public ValueRef Copy()
     {
-        return new ValueRef(_data.Copy());
+        return new ValueRef(data.Copy());
     }
 
     public ulong GetMemoryUnits()
     {
-        return _data.GetMemoryUnits();
+        return data.GetMemoryUnits();
     }
 }
