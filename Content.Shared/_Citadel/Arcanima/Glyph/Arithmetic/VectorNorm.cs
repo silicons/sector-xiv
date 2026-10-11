@@ -4,10 +4,15 @@ using Content.Shared._Citadel.Arcanima.Engine.Values;
 
 namespace Content.Shared._Citadel.Arcanima.Glyph.Arithmetic;
 
-/// <summary>
-/// A glyph that scales a vector to the length given by the number on top of the stack.
-/// Zero vectors remain zero. Both arguments are consumed.
-/// </summary>
+/**
+ * A glyph that scales a vector to a target length. Zero vectors remain zero.
+ * <br />
+ * <br />
+ * <li>Arg 1 (TOP-1) - Vector (Vec2)</li>
+ * <li>Arg 2 (TOP) - Target Length (Number)</li>
+ * <br />
+ * On success, all operands are consumed and a single result is pushed onto the stack.
+ */
 public sealed class VectorNorm : Engine.Glyph
 {
     public override ExecutionResult Execute(ExecutionContext context)

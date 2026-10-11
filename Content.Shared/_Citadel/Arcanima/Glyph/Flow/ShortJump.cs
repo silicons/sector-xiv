@@ -17,7 +17,7 @@ public sealed class ShortJump(int absoluteIdx) : Engine.Glyph
         {
             return new ExecutionResult
             {
-                Error = new OutOfRangeError(absoluteIdx, 0, context.Chain.Glyphs.Length - 1),
+                Error = new OutOfRangeError(absoluteIdx, 0, context.Chain.Glyphs.Length - 1, 0),
             };
         }
 
