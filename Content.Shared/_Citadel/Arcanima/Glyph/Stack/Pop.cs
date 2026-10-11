@@ -1,3 +1,5 @@
+using Content.Shared._Citadel.Arcanima.Engine;
+
 namespace Content.Shared._Citadel.Arcanima.Glyph.Stack;
 
 /**
@@ -5,7 +7,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Stack;
  */
 public sealed class Pop : Engine.Glyph
 {
-    public override void Execute(CarriedThread thread)
+    public override ExecutionResult Execute(CarrierThread thread, ExecutionState state)
     {
 #warning Pop.Execute is not implemented.
         throw new NotImplementedException();

@@ -14,7 +14,7 @@ public sealed class Push(ValueRef value) : Engine.Glyph
         return _value.Copy();
     }
 
-    public override void Execute(CarriedThread thread)
+    public override ExecutionResult Execute(CarrierThread thread, ExecutionState state)
     {
 #warning Push.Execute is not implemented.
         throw new NotImplementedException();

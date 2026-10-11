@@ -1,3 +1,5 @@
+using Content.Shared._Citadel.Arcanima.Engine;
+
 namespace Content.Shared._Citadel.Arcanima.Glyph.Flow;
 
 /**
@@ -7,4 +9,9 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Flow;
  */
 public sealed class Sleep : Engine.Glyph
 {
+    public override ExecutionResult Execute(CarrierThread thread, ExecutionState state)
+    {
+#warning Sleep.Execute is not implemented.
+        throw new NotImplementedException();
+    }
 }

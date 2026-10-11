@@ -1,3 +1,5 @@
+using Content.Shared._Citadel.Arcanima.Engine;
+
 namespace Content.Shared._Citadel.Arcanima.Glyph.Memory;
 
 /**
@@ -5,7 +7,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Memory;
  */
 public sealed class Store : Engine.Glyph
 {
-    public override void Execute(CarriedThread thread)
+    public override ExecutionResult Execute(CarrierThread thread, ExecutionState state)
     {
 #warning Store.Execute is not implemented.
         throw new NotImplementedException();

@@ -7,7 +7,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Memory;
  */
 public sealed class Load(Identifier id) : Engine.Glyph
 {
-    public override void Execute(CarrierThread thread)
+    public override ExecutionResult Execute(CarrierThread thread, ExecutionState state)
     {
 #warning Load.Execute is not implemented.
         throw new NotImplementedException();
