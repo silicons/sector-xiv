@@ -7,7 +7,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Flow;
  */
 public sealed class LongJump : Engine.Glyph
 {
-    public override ExecutionResult Execute(CarrierThread thread, ExecutionState state)
+    public override ExecutionResult Execute(ExecutionContext context)
     {
 #warning LongJump.Execute is not implemented.
         throw new NotImplementedException();

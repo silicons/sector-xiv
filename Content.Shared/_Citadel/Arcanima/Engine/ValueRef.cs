@@ -32,6 +32,13 @@ public readonly struct ValueRef
         return false;
     }
 
+    public T GetRef<T>() where T : ValueBase
+    {
+        if (_data is T casted)
+            return casted;
+        throw new InvalidOperationException($"ValueRef is not of type {typeof(T).Name}");
+    }
+
     /// <summary>
     /// Gets a copy of this ValueRef, whatever type it is.
     /// </summary>

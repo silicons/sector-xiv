@@ -7,7 +7,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Arithmetic;
  */
 public sealed class VectorNormalize : Engine.Glyph
 {
-    public override ExecutionResult Execute(CarrierThread thread, ExecutionState state)
+    public override ExecutionResult Execute(ExecutionContext context)
     {
 #warning VectorNormalize.Execute is not implemented.
         throw new NotImplementedException();

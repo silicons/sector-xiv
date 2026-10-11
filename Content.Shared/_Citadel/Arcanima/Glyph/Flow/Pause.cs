@@ -9,7 +9,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Flow;
  */
 public sealed class Pause : Engine.Glyph
 {
-    public override ExecutionResult Execute(CarrierThread thread, ExecutionState state)
+    public override ExecutionResult Execute(ExecutionContext context)
     {
 #warning Pause.Execute is not implemented.
         throw new NotImplementedException();

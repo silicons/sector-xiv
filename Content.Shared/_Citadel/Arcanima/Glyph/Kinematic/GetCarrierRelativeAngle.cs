@@ -7,7 +7,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Kinematic;
  */
 public sealed class GetCarrierRelativeAngle : Engine.Glyph
 {
-    public override ExecutionResult Execute(CarrierThread thread, ExecutionState state)
+    public override ExecutionResult Execute(ExecutionContext context)
     {
 #warning GetCarrierFacing.Execute is not implemented.
         throw new NotImplementedException();

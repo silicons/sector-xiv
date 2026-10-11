@@ -1,15 +1,13 @@
-using Content.Shared._Citadel.Arcanima.Engine;
+namespace Content.Shared._Citadel.Arcanima.Engine.Values;
 
-namespace Values;
-
-public sealed class Vec2 : ValueBase
+public sealed class Vec2(double x, double y) : ValueBase
 {
-    public double X { get; set; }
-    public double Y { get; set; }
+    public double X { get; set; } = x;
+    public double Y { get; set; } = y;
 
     public override Vec2 Copy()
     {
-        return new Vec2 { X = X, Y = Y };
+        return new Vec2(X, Y);
     }
 
     public override ulong GetMemoryUnits()

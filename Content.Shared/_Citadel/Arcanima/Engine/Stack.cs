@@ -1,5 +1,3 @@
-using Content.Shared._Citadel.Arcanima.Engine.Values;
-
 namespace Content.Shared._Citadel.Arcanima.Engine;
 
 /**
@@ -37,6 +35,14 @@ public sealed class Stack : ICloneable
         var value = Peek();
         _values.RemoveAt(_values.Count - 1);
         return value;
+    }
+
+    public void Pop(int count)
+    {
+        if (count < 0 || count > _values.Count)
+            throw new ArgumentOutOfRangeException(nameof(count));
+
+        _values.RemoveRange(_values.Count - count, count);
     }
 
     public ValueRef Peek()

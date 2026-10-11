@@ -1,14 +1,12 @@
-using Content.Shared._Citadel.Arcanima.Engine;
+namespace Content.Shared._Citadel.Arcanima.Engine.Values;
 
-namespace Values;
-
-public sealed class Text : ValueBase
+public sealed class Text(string value) : ValueBase
 {
-    public string Value { get; set; } = "";
+    public string Value { get; set; } = value;
 
     public override Text Copy()
     {
-        return new Text { Value = Value };
+        return new Text(Value);
     }
 
     public override ulong GetMemoryUnits()

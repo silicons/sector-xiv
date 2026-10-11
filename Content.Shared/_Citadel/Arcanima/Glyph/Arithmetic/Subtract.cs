@@ -7,7 +7,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Arithmetic;
  */
 public sealed class Subtract : Engine.Glyph
 {
-    public override ExecutionResult Execute(CarrierThread thread, ExecutionState state)
+    public override ExecutionResult Execute(ExecutionContext context)
     {
 #warning Subtract.Execute is not implemented.
         throw new NotImplementedException();

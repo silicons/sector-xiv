@@ -7,7 +7,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Arithmetic;
  */
 public sealed class Divide : Engine.Glyph
 {
-    public override ExecutionResult Execute(CarrierThread thread, ExecutionState state)
+    public override ExecutionResult Execute(ExecutionContext context)
     {
 #warning Divide.Execute is not implemented.
         throw new NotImplementedException();

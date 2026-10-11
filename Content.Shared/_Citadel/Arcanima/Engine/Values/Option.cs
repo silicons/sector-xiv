@@ -1,14 +1,12 @@
-using Content.Shared._Citadel.Arcanima.Engine;
+namespace Content.Shared._Citadel.Arcanima.Engine.Values;
 
-namespace Values;
-
-public sealed class Option<T> : ValueBase where T : ValueBase
+public sealed class Option<T>(T? value) : ValueBase where T : ValueBase
 {
-    public T? Value { get; set; }
+    public T? Value { get; set; } = value;
 
     public override Option<T> Copy()
     {
-        return new Option<T> { Value = Value == null ? null : (T)Value.Copy() };
+        return new Option<T>(Value == null ? null : (T)Value.Copy());
     }
 
     public override ulong GetMemoryUnits()

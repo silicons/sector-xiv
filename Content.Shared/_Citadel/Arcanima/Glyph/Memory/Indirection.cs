@@ -7,7 +7,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Memory;
  */
 public sealed class Indirection : Engine.Glyph
 {
-    public override ExecutionResult Execute(CarrierThread thread, ExecutionState state)
+    public override ExecutionResult Execute(ExecutionContext context)
     {
 #warning Indirection.Execute is not implemented.
         throw new NotImplementedException();

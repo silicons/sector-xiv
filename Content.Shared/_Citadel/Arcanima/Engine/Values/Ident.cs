@@ -1,6 +1,4 @@
-using Content.Shared._Citadel.Arcanima.Engine;
-
-namespace Values;
+namespace Content.Shared._Citadel.Arcanima.Engine.Values;
 
 /// <summary>
 /// Represents a program Identifier.

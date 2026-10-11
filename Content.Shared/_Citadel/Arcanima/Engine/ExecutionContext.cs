@@ -3,7 +3,7 @@ namespace Content.Shared._Citadel.Arcanima.Engine;
 /// <summary>
 /// Carries execution state.
 /// </summary>
-public ref struct ExecutionState
+public ref struct ExecutionContext
 {
     /// <summary>
     /// Index of the glyph being executed in the glyph-chain.
@@ -24,4 +24,9 @@ public ref struct ExecutionState
     /// Carrier reference.
     /// </summary>
     public Carrier Carrier;
+
+    /// <summary>
+    /// Invocation reference.
+    /// </summary>
+    public Invocation Invocation;
 }

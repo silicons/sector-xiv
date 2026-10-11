@@ -22,6 +22,11 @@ public ref struct ExecutionResult()
 
     /// <summary>
     /// The error that occurred during execution, if any.
+    /// <br />
+    /// <br />
+    /// If set, the program may or may not be in a valid state.
+    /// Glyphs generally should not modify the stack until after they've validated arguments, so
+    /// it's likely that the program is still in a valid state, but this is not guaranteed.
     /// </summary>
     public Error? Error = null;
 }

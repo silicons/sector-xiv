@@ -7,7 +7,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Arithmetic;
  */
 public sealed class Multiply : Engine.Glyph
 {
-    public override ExecutionResult Execute(CarrierThread thread, ExecutionState state)
+    public override ExecutionResult Execute(ExecutionContext context)
     {
 #warning Multiply.Execute is not implemented.
         throw new NotImplementedException();

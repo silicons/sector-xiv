@@ -4,6 +4,7 @@ namespace Content.Shared._Citadel.Arcanima.Engine.Errors;
 /// Errors. ExecutionResult does not necessarily have one; that way we only heap-allocate
 /// upon getting one.
 /// </summary>
-public class Error
+public abstract class Error
 {
+    public abstract string Format();
 }
