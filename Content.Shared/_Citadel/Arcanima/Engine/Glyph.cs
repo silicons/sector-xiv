@@ -13,4 +13,6 @@ namespace Content.Shared._Citadel.Arcanima.Engine;
 public abstract class Glyph
 {
     public abstract ExecutionResult Execute(CarrierThread thread, ExecutionState state);
+
+    public abstract Glyph Copy();
 }
