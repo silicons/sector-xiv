@@ -13,7 +13,8 @@ namespace Content.Shared._Citadel.Arcanima.Engine;
 public sealed class Carrier(Invocation invocation)
 {
     public
-        Invocation Invocation { get; } = invocation;
+        Invocation Invocation
+    { get; } = invocation;
 
     /**
      * <summary>
@@ -24,4 +25,9 @@ public sealed class Carrier(Invocation invocation)
      * </summary>
      */
     public bool Paused { get; set; } = false;
+
+    /// <summary>
+    /// Execution stack of the carrier.
+    /// </summary>
+    public Stack Stack = new();
 }

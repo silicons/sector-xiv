@@ -1,4 +1,4 @@
-using Content.Shared._Citadel.Arcanima.Engine.Values;
+using Content.Shared._Citadel.Arcanima.Engine;
 
 namespace Values;
 
