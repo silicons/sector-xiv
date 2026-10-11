@@ -5,7 +5,7 @@ namespace Content.Shared._Citadel.Arcanima.Engine;
  */
 public sealed class GlyphChainBuilder
 {
-    public GlyphChainBuilder(GlyphChainId id)
+    public GlyphChainBuilder(Identifier id)
     {
         Id = id;
     }
@@ -20,5 +20,5 @@ public sealed class GlyphChainBuilder
      */
     public Glyph[] Glyphs { get; }
 
-    public GlyphChainId Id { get; }
+    public Identifier Id { get; }
 }

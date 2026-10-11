@@ -5,7 +5,7 @@ namespace Content.Shared._Citadel.Arcanima.Engine;
  */
 public sealed class Invocation
 {
-    private List<Carrier> _carriers = new();
+    private List<CarrierThread> _carriers = new();
 
     /**
      * Running average of compute units used per tick.

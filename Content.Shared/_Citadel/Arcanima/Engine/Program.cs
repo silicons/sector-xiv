@@ -17,5 +17,5 @@ public sealed class Program
     /**
      * Glyph chains by ID.
      */
-    public ImmutableDictionary<GlyphChainId, GlyphChain> GlyphChains { get; }
+    public ImmutableDictionary<Identifier, GlyphChain> GlyphChains { get; }
 }

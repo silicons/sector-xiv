@@ -3,9 +3,9 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Kinematic;
 /**
  * A glyph that gets the carrier's velocity.
  */
-public sealed class GetCarrierVelocity : Engine.Glyph
+public sealed class GetCarrierRelativeVelocity : Engine.Glyph
 {
-    public override void Execute(Engine.Carrier carrier)
+    public override void Execute(CarriedThread thread)
     {
 #warning GetCarrierVelocity.Execute is not implemented.
         throw new NotImplementedException();

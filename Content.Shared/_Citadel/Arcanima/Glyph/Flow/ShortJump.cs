@@ -5,7 +5,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Flow;
  */
 public sealed class ShortJump : Engine.Glyph
 {
-    public override void Execute(Engine.Carrier carrier)
+    public override void Execute(CarriedThread thread)
     {
 #warning ShortJump.Execute is not implemented.
         throw new NotImplementedException();
