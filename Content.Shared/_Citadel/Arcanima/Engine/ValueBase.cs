@@ -1,3 +1,5 @@
+using Content.Shared._Citadel.Arcanima.Engine.Interfaces;
+
 namespace Content.Shared._Citadel.Arcanima.Engine;
 
 /**
@@ -9,13 +11,8 @@ namespace Content.Shared._Citadel.Arcanima.Engine;
  * This is made in a way to be friendly to transform into discriminated unions in the future,
  * so hopefully someday this can all be structs for speed.
  */
-public abstract class ValueBase
+public abstract class ValueBase : IMemoryMeasurable
 {
-    /// <summary>
-    /// Returns an independent copy, including any nested mutable values.
-    /// </summary>
-    public abstract ValueBase Copy();
-
     /**
      * Measures this in memory units.
      * <br />
@@ -25,4 +22,9 @@ public abstract class ValueBase
      * As a rule of thumb, every 8 bytes is 1 memory unit.
      */
     public abstract ulong GetMemoryUnits();
+
+    /// <summary>
+    /// Returns an independent copy, including any nested mutable values.
+    /// </summary>
+    public abstract ValueBase Copy();
 }
