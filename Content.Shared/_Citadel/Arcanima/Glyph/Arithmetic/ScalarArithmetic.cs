@@ -9,20 +9,31 @@ internal static class ScalarArithmetic
     public static ExecutionResult Execute<TOperation>(ExecutionContext context)
         where TOperation : struct, IOperation
     {
-        if (context.Stack.Size < 2)
+        if (!context.Stack.TryPeekFromTop(1, out var firstOperand)
+            || !context.Stack.TryPeekFromTop(0, out var secondOperand))
             return new ExecutionResult { Error = new InsufficientArgumentsError(2, context.Stack.Size) };
 
-        var first = context.Stack.PeekFromTop(1).GetRef<ValueBase>();
-        var second = context.Stack.PeekFromTop(0).GetRef<ValueBase>();
+        var first = firstOperand.GetRef<ValueBase>();
+        var second = secondOperand.GetRef<ValueBase>();
         ValueBase? result = (first, second) switch
         {
             (Number a, Number b) => new Number(TOperation.Apply(a.Value, b.Value)),
             (Vec2 a, Number b) => new Vec2(TOperation.Apply(a.X, b.Value), TOperation.Apply(a.Y, b.Value)),
             (Vec2 a, Vec2 b) => new Vec2(TOperation.Apply(a.X, b.X), TOperation.Apply(a.Y, b.Y)),
-            (Vec3 a, Number b) => new Vec3(TOperation.Apply(a.X, b.Value), TOperation.Apply(a.Y, b.Value), TOperation.Apply(a.Z, b.Value)),
-            (Vec3 a, Vec3 b) => new Vec3(TOperation.Apply(a.X, b.X), TOperation.Apply(a.Y, b.Y), TOperation.Apply(a.Z, b.Z)),
-            (Vec4 a, Number b) => new Vec4(TOperation.Apply(a.X, b.Value), TOperation.Apply(a.Y, b.Value), TOperation.Apply(a.Z, b.Value), TOperation.Apply(a.W, b.Value)),
-            (Vec4 a, Vec4 b) => new Vec4(TOperation.Apply(a.X, b.X), TOperation.Apply(a.Y, b.Y), TOperation.Apply(a.Z, b.Z), TOperation.Apply(a.W, b.W)),
+            (Vec3 a, Number b) => new Vec3(TOperation.Apply(a.X, b.Value),
+                TOperation.Apply(a.Y, b.Value),
+                TOperation.Apply(a.Z, b.Value)),
+            (Vec3 a, Vec3 b) => new Vec3(TOperation.Apply(a.X, b.X),
+                TOperation.Apply(a.Y, b.Y),
+                TOperation.Apply(a.Z, b.Z)),
+            (Vec4 a, Number b) => new Vec4(TOperation.Apply(a.X, b.Value),
+                TOperation.Apply(a.Y, b.Value),
+                TOperation.Apply(a.Z, b.Value),
+                TOperation.Apply(a.W, b.Value)),
+            (Vec4 a, Vec4 b) => new Vec4(TOperation.Apply(a.X, b.X),
+                TOperation.Apply(a.Y, b.Y),
+                TOperation.Apply(a.Z, b.Z),
+                TOperation.Apply(a.W, b.W)),
             _ => null,
         };
 
@@ -40,7 +51,9 @@ internal static class ScalarArithmetic
             {
                 Error = expected != null
                     ? new BadInputTypeError(second.GetType(), expected, 0)
-                    : new BadInputTypeError(first.GetType(), [typeof(Number), typeof(Vec2), typeof(Vec3), typeof(Vec4)], 1),
+                    : new BadInputTypeError(first.GetType(),
+                        [typeof(Number), typeof(Vec2), typeof(Vec3), typeof(Vec4)],
+                        1),
             };
         }
 
@@ -52,26 +65,38 @@ internal static class ScalarArithmetic
     // Value-type specialization lets the JIT inline arithmetic without delegate dispatch.
     public interface IOperation
     {
-        static abstract double Apply(double a, double b);
+        abstract static double Apply(double a, double b);
     }
 
     public readonly struct Add : IOperation
     {
-        public static double Apply(double a, double b) => a + b;
+        public static double Apply(double a, double b)
+        {
+            return a + b;
+        }
     }
 
     public readonly struct Subtract : IOperation
     {
-        public static double Apply(double a, double b) => a - b;
+        public static double Apply(double a, double b)
+        {
+            return a - b;
+        }
     }
 
     public readonly struct Multiply : IOperation
     {
-        public static double Apply(double a, double b) => a * b;
+        public static double Apply(double a, double b)
+        {
+            return a * b;
+        }
     }
 
     public readonly struct Divide : IOperation
     {
-        public static double Apply(double a, double b) => a / b;
+        public static double Apply(double a, double b)
+        {
+            return a / b;
+        }
     }
 }

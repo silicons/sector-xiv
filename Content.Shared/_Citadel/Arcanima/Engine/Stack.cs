@@ -1,7 +1,7 @@
 namespace Content.Shared._Citadel.Arcanima.Engine;
 
 /**
- * A stack of value handles with indexed access.
+ * A stack of VM values with indexed access.
  */
 public sealed class Stack : ICloneable
 {
@@ -21,11 +21,8 @@ public sealed class Stack : ICloneable
     }
 
     /// <summary>
-    /// Pushes a <b>ValueRef</b> to the Stack.
-    /// <br />
-    /// <br />
-    /// Warning - if this ValueRef is an alias, it will stay an alias.
-    /// Make sure to Copy() it if not.
+    /// Pushes a ValueRef without copying its underlying value.
+    /// Use Copy() when an independent value is required.
     /// </summary>
     /// <param name="value"></param>
     public void Push(ValueRef value)
@@ -61,7 +58,7 @@ public sealed class Stack : ICloneable
         return _values[Size - 1];
     }
 
-    /// <summary>Tries to return an alias at a zero-based index from the top.</summary>
+    /// <summary>Tries to return a value at a zero-based index from the top.</summary>
     public bool TryPeekFromTop(int index, out ValueRef value)
     {
         if (index < 0 || index >= Size)
@@ -74,7 +71,7 @@ public sealed class Stack : ICloneable
         return true;
     }
 
-    /// <summary>Tries to return an alias at a zero-based index from the bottom.</summary>
+    /// <summary>Tries to return a value at a zero-based index from the bottom.</summary>
     public bool TryPeek(int index, out ValueRef value)
     {
         if (index < 0 || index >= Size)

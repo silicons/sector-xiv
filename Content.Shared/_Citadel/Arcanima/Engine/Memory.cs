@@ -1,16 +1,33 @@
 namespace Content.Shared._Citadel.Arcanima.Engine;
 
 /**
- * Memory is a collection of data stored on an invocation by the user program.
- * <br />
- * <br />
- * Arcanima operates with key-value memory. Programs must declare their memory keys in advance,
- * which allows an inherent optimization: memory keys are stored as references, and the program can use those
- * references instead of string comparisons.
- * <br />
- * <br />
+ * Memory stores values keyed by Identifier references.
+ * Reads and writes copy values so stack results cannot overwrite stored data.
  */
 public sealed class Memory
 {
-    private Dictionary<Identifier, ValueRef> _memory = new();
+    private readonly Dictionary<Identifier, ValueRef> _values = new();
+
+    /// <summary>
+    /// Returns an independent copy of the value at the identifier.
+    /// </summary>
+    public bool TryGetValueCopy(Identifier id, out ValueRef value)
+    {
+        if (_values.TryGetValue(id, out var stored))
+        {
+            value = stored.Copy();
+            return true;
+        }
+
+        value = default;
+        return false;
+    }
+
+    /// <summary>
+    /// Stores an independent copy, replacing any value already at the identifier.
+    /// </summary>
+    public void StoreValueCopy(Identifier id, ValueRef value)
+    {
+        _values[id] = value.Copy();
+    }
 }

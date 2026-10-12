@@ -1,23 +1,13 @@
 namespace Content.Shared._Citadel.Arcanima.Engine;
 
 /// <summary>
-/// A reference / handle to a mutable value cell.
-/// <br />
-/// <br />
-/// Normal copies of this struct will alias; Copy() will make a new ValueRef
-/// with a separate cell.
-/// <br />
-/// <br />
-/// This unfortunately adds overhead, but confining storage access here
-/// allows for us to replace the backend of Arcanima's memory system later without much fuss.
+/// Wraps a VM value in a storage cell. Struct copies refer to the same cell;
+/// Copy() creates an independent cell and value snapshot.
 /// </summary>
 public readonly struct ValueRef
 {
     private readonly ValueCell _cell;
 
-    /// <summary>
-    /// Creates an owned value cell. Obtaining or copying a handle to it does not allocate.
-    /// </summary>
     public ValueRef(ValueBase data)
     {
         _cell = new ValueCell(data);
@@ -61,15 +51,7 @@ public readonly struct ValueRef
     }
 
     /// <summary>
-    /// Replaces the cell's value. All aliases, including stack and memory handles, see the change.
-    /// </summary>
-    public void Store<T>(T value) where T : ValueBase
-    {
-        _cell.Data = value;
-    }
-
-    /// <summary>
-    /// Creates an independent ValueRef and cell containing a copy of the current value.
+    /// Creates an independent ValueRef containing a copy of the current value.
     /// </summary>
     public ValueRef Copy()
     {
