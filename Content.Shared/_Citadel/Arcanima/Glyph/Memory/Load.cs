@@ -28,12 +28,11 @@ public sealed class Load : Engine.Glyph
             };
         }
 
-        if (!context.Memory.TryGetRef(id.Value, out var value))
+        if (!context.Memory.TryGetValueCopy(id.Value, out var value))
             return new ExecutionResult { Error = new BadIdentifierError(id.Value) };
 
-        var copy = value.Copy();
         context.Stack.Pop();
-        context.Stack.Push(copy);
+        context.Stack.Push(value);
         return new ExecutionResult();
     }
 

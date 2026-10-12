@@ -5,8 +5,7 @@ using Content.Shared._Citadel.Arcanima.Engine.Values;
 namespace Content.Shared._Citadel.Arcanima.Glyph.Memory;
 
 /**
- * A glyph that stores a value in memory. The existing memory cell
- * will be overwritten with a copy and any references to it will see the new value.
+ * A glyph that stores a copy of a value in memory.
  * <br />
  * <br />
  * <li>Arg 1 (TOP-1) - Memory Identifier (Ident)</li>

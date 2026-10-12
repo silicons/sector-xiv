@@ -11,7 +11,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Arithmetic;
  * <li>Arg 1 (TOP-1) - First Vector (Vec3)</li>
  * <li>Arg 2 (TOP) - Second Vector (Vec3)</li>
  * <br />
- * On success, a single Vec3 result replaces the first operand and the second operand is consumed.
+ * On success, all operands are consumed and a single Vec3 result is pushed onto the stack.
  */
 public sealed class VectorCrossProduct : Engine.Glyph
 {
@@ -43,8 +43,8 @@ public sealed class VectorCrossProduct : Engine.Glyph
             a.Y * b.Z - a.Z * b.Y,
             a.Z * b.X - a.X * b.Z,
             a.X * b.Y - a.Y * b.X);
-        first.Store(result);
-        context.Stack.Pop();
+        context.Stack.Pop(2);
+        context.Stack.Push(new ValueRef(result));
         return new ExecutionResult();
     }
 

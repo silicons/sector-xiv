@@ -11,7 +11,7 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Arithmetic;
  * <li>Arg 1 (TOP-1) - Vector (Vec2)</li>
  * <li>Arg 2 (TOP) - Target Length (Number)</li>
  * <br />
- * On success, a single result replaces the first operand and the second operand is consumed.
+ * On success, all operands are consumed and a single result is pushed onto the stack.
  */
 public sealed class VectorNorm : Engine.Glyph
 {
@@ -43,8 +43,8 @@ public sealed class VectorNorm : Engine.Glyph
         var result = length == 0
             ? new Vec2(0, 0)
             : new Vec2(value.X / length * targetLength, value.Y / length * targetLength);
-        vector.Store(result);
-        context.Stack.Pop();
+        context.Stack.Pop(2);
+        context.Stack.Push(new ValueRef(result));
         return new ExecutionResult();
     }
 
