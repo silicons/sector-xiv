@@ -11,28 +11,31 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Arithmetic;
  * <li>Arg 1 (TOP-1) - Vector (Vec2)</li>
  * <li>Arg 2 (TOP) - Target Length (Number)</li>
  * <br />
- * On success, all operands are consumed and a single result is pushed onto the stack.
+ * On success, a single result replaces the first operand and the second operand is consumed.
  */
 public sealed class VectorNorm : Engine.Glyph
 {
     public override ExecutionResult Execute(ExecutionContext context)
     {
-        if (context.Stack.Size < 2)
+        if (!context.Stack.TryPeekFromTop(1, out var vector)
+            || !context.Stack.TryPeekFromTop(0, out var norm))
             return new ExecutionResult { Error = new InsufficientArgumentsError(2, context.Stack.Size) };
 
-        var vector = context.Stack.PeekFromTop(1);
-        var norm = context.Stack.PeekFromTop(0);
         if (!vector.Is<Vec2>())
+        {
             return new ExecutionResult
             {
                 Error = new BadInputTypeError(vector.GetRef<ValueBase>().GetType(), [typeof(Vec2)], 1),
             };
+        }
 
         if (!norm.Is<Number>())
+        {
             return new ExecutionResult
             {
                 Error = new BadInputTypeError(norm.GetRef<ValueBase>().GetType(), [typeof(Number)], 0),
             };
+        }
 
         var value = vector.GetRef<Vec2>();
         var targetLength = norm.GetRef<Number>().Value;
@@ -40,8 +43,8 @@ public sealed class VectorNorm : Engine.Glyph
         var result = length == 0
             ? new Vec2(0, 0)
             : new Vec2(value.X / length * targetLength, value.Y / length * targetLength);
-        context.Stack.Pop(2);
-        context.Stack.Push(new ValueRef(result));
+        vector.Store(result);
+        context.Stack.Pop();
         return new ExecutionResult();
     }
 

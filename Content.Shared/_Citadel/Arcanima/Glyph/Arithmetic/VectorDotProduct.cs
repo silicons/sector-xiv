@@ -11,17 +11,18 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Arithmetic;
  * <li>Arg 1 (TOP-1) - First Vector (Vec2, Vec3, or Vec4)</li>
  * <li>Arg 2 (TOP) - Second Vector (Vec2, Vec3, or Vec4)</li>
  * <br />
- * On success, all operands are consumed and a single Number result is pushed onto the stack.
+ * On success, a single Number result replaces the first operand and the second operand is consumed.
  */
 public sealed class VectorDotProduct : Engine.Glyph
 {
     public override ExecutionResult Execute(ExecutionContext context)
     {
-        if (context.Stack.Size < 2)
+        if (!context.Stack.TryPeekFromTop(1, out var destination)
+            || !context.Stack.TryPeekFromTop(0, out var secondOperand))
             return new ExecutionResult { Error = new InsufficientArgumentsError(2, context.Stack.Size) };
 
-        var first = context.Stack.PeekFromTop(1).GetRef<ValueBase>();
-        var second = context.Stack.PeekFromTop(0).GetRef<ValueBase>();
+        var first = destination.GetRef<ValueBase>();
+        var second = secondOperand.GetRef<ValueBase>();
         var result = (first, second) switch
         {
             (Vec2 a, Vec2 b) => new Number(a.X * b.X + a.Y * b.Y),
@@ -40,8 +41,8 @@ public sealed class VectorDotProduct : Engine.Glyph
             };
         }
 
-        context.Stack.Pop(2);
-        context.Stack.Push(new ValueRef(result));
+        destination.Store(result);
+        context.Stack.Pop();
         return new ExecutionResult();
     }
 

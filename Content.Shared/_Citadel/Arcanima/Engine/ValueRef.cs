@@ -1,21 +1,38 @@
 namespace Content.Shared._Citadel.Arcanima.Engine;
 
 /// <summary>
-/// Wraps the VM's values so their class representation can be replaced with a discriminated union later.
+/// A reference / handle to a mutable value cell.
 /// <br />
 /// <br />
-/// This is called 'Ref' to make it explicit that copying this won't copy the value.
+/// Normal copies of this struct will alias; Copy() will make a new ValueRef
+/// with a separate cell.
+/// <br />
+/// <br />
+/// This unfortunately adds overhead, but confining storage access here
+/// allows for us to replace the backend of Arcanima's memory system later without much fuss.
 /// </summary>
-public readonly struct ValueRef(ValueBase data)
+public readonly struct ValueRef
 {
-    public readonly bool Is<T>() where T : ValueBase
+    private readonly ValueCell _cell;
+
+    /// <summary>
+    /// Creates an owned value cell. Obtaining or copying a handle to it does not allocate.
+    /// </summary>
+    public ValueRef(ValueBase data)
     {
-        return data is T;
+        _cell = new ValueCell(data);
     }
 
-    public readonly bool GetIf<T>(out T? value) where T : ValueBase
+    private ValueBase Data => _cell.Data;
+
+    public bool Is<T>() where T : ValueBase
     {
-        if (data is T t)
+        return Data is T;
+    }
+
+    public bool GetIf<T>(out T? value) where T : ValueBase
+    {
+        if (Data is T t)
         {
             value = t;
             return true;
@@ -25,29 +42,42 @@ public readonly struct ValueRef(ValueBase data)
         return false;
     }
 
+    public void Get<T>(out T value) where T : ValueBase
+    {
+        // May throw InvalidCastException.
+        value = (T)Data;
+    }
+
     public T GetRef<T>() where T : ValueBase
     {
-        if (data is T casted)
+        if (Data is T casted)
             return casted;
         throw new InvalidOperationException($"ValueRef is not of type {typeof(T).Name}");
     }
 
     public T? GetMaybeRef<T>() where T : ValueBase
     {
-        return data as T;
+        return Data as T;
     }
 
     /// <summary>
-    /// Gets a copy of this ValueRef, whatever type it is.
+    /// Replaces the cell's value. All aliases, including stack and memory handles, see the change.
     /// </summary>
-    /// <returns></returns>
+    public void Store<T>(T value) where T : ValueBase
+    {
+        _cell.Data = value;
+    }
+
+    /// <summary>
+    /// Creates an independent ValueRef and cell containing a copy of the current value.
+    /// </summary>
     public ValueRef Copy()
     {
-        return new ValueRef(data.Copy());
+        return new ValueRef(Data.Copy());
     }
 
     public ulong GetMemoryUnits()
     {
-        return data.GetMemoryUnits();
+        return Data.GetMemoryUnits();
     }
 }
