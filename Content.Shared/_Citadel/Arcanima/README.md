@@ -2,6 +2,16 @@
 
 "and silicons didn't ask whether they should, instead they asked whether they could"
 
+`Arcanima` is, at this point, a virtual-pseudo-ISA used to implement features where
+heavily dynamic content is desired. Like, say, Xenoarch, with its ability for players
+to harness the power of artifacts, occult spells for the Eldritch module, and nanite-swarm programming.
+
+Unlike Hexcasting and other systems, this is not _strictly_ an assembly analogue; instead, it's
+built with 'hook points' for various game systems and is ultimately specialized for the game itself.
+
+The entire system is built with 'forking' in mind; a program splitting into multiple active components,
+because not all spells are 'fire and do one thing at a time' with hitscan in this game. Most aren't, actually!
+
 ## Engine
 
 TODO: Re-document this after the dust settles.
