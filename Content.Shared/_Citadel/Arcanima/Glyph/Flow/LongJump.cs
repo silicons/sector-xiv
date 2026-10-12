@@ -10,16 +10,17 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Flow;
  * <br />
  * <li>Arg 1 (TOP-1) - Glyph Chain Identifier</li>
  * <li>Arg 2 (TOP) - Glyph Index (truncated toward zero and cast to int)</li>
+ * <br />
+ * On success, both operands are consumed.
  */
 public sealed class LongJump : Engine.Glyph
 {
     public override ExecutionResult Execute(ExecutionContext context)
     {
-        if (context.Stack.Size < 2)
+        if (!context.Stack.TryPeekFromTop(1, out var idValue)
+            || !context.Stack.TryPeekFromTop(0, out var indexValue))
             return new ExecutionResult { Error = new InsufficientArgumentsError(2, context.Stack.Size) };
 
-        var idValue = context.Stack.PeekFromTop(1);
-        var indexValue = context.Stack.PeekFromTop(0);
         var id = idValue.GetMaybeRef<Ident>();
         var index = indexValue.GetMaybeRef<Number>();
         if (id == null)
