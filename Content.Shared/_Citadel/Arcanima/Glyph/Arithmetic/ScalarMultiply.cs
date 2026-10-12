@@ -13,7 +13,8 @@ namespace Content.Shared._Citadel.Arcanima.Glyph.Arithmetic;
  * to a vector of the same size with that value in every component.
  * If both operands are vectors, they must be the same size.
  * <br />
- * On success, all operands are consumed and a single result is pushed onto the stack.
+ * On success, a single result replaces the first operand and the second operand is consumed.
+ * If the first operand is indirect, its memory slot is updated and the reference remains on the stack.
  */
 public sealed class ScalarMultiply : Engine.Glyph
 {

@@ -1,4 +1,5 @@
 using Content.Shared._Citadel.Arcanima.Engine;
+using Content.Shared._Citadel.Arcanima.Engine.Errors;
 
 namespace Content.Shared._Citadel.Arcanima.Glyph.Stack;
 
@@ -9,7 +10,15 @@ public sealed class Pop : Engine.Glyph
 {
     public override ExecutionResult Execute(ExecutionContext context)
     {
-#warning Pop.Execute is not implemented.
-        throw new NotImplementedException();
+        if (context.Stack.Size < 1)
+            return new ExecutionResult { Error = new InsufficientArgumentsError(1, context.Stack.Size) };
+
+        context.Stack.Pop();
+        return new ExecutionResult();
+    }
+
+    public override Engine.Glyph Copy()
+    {
+        return new Pop();
     }
 }

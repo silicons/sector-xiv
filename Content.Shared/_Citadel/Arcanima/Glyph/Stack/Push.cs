@@ -16,7 +16,12 @@ public sealed class Push(ValueRef value) : Engine.Glyph
 
     public override ExecutionResult Execute(ExecutionContext context)
     {
-#warning Push.Execute is not implemented.
-        throw new NotImplementedException();
+        context.Stack.Push(GetValueCopy());
+        return new ExecutionResult();
+    }
+
+    public override Engine.Glyph Copy()
+    {
+        return new Push(_value);
     }
 }
