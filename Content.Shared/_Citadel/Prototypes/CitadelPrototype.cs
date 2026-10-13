@@ -12,12 +12,12 @@ namespace Content.Shared._Citadel.Prototypes;
 /// <br />
 /// TODO: describe why the hell we need this, synchornization, database, implement
 /// </summary>
-public interface ICitadelPrototype
+public sealed class CitadelPrototype : Attribute
 {
-    internal ReaderWriterLock CoherenceLock { get; }
-    internal List<CitadelPrototypeReadLock> ActiveSyncLocks { get; }
+    internal ReaderWriterLock CoherenceLock { get; } = new();
+    internal List<CitadelPrototypeReadLock> ActiveSyncLocks { get; } = new();
 
-    void marker()
+    private void marker()
     {
 #warning implement write handle / whatnot, and a way to check
     }
