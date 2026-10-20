@@ -5,4 +5,8 @@ namespace Content.Shared._Citadel.Damage;
 [DataDefinition] [Serializable] [NetSerializable]
 public sealed partial class DamageSpecifier : IEquatable<DamageSpecifier>, IRobustCloneable<DamageSpecifier>
 {
+    public float Amount;
+
+    public DamageFlags FlagsAdded;
+    public DamageFlags FlagsRemoved;
 }
