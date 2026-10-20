@@ -1,3 +1,4 @@
+using Content.Shared._Citadel.Armor.Prototypes;
 using Content.Shared._Citadel.Damage.Prototypes;
 
 namespace Content.Shared._Citadel.Damage;
@@ -27,5 +28,28 @@ namespace Content.Shared._Citadel.Damage;
 public struct DamageInstance
 {
     public float Amount;
+
+    /// <summary>
+    /// The damage type of the damage instance.
+    /// </summary>
     public CitadelDamageTypePrototype DamageType;
+
+    /// <summary>
+    /// The tier of the damage instance to be matched against armor
+    /// if the armor type being checked is set to Dynamic.
+    /// <br />
+    /// <br />
+    /// This is optional; legacy damage instances will not have this set.
+    /// </summary>
+    public float? Tier;
+
+    /// <summary>
+    /// The armor type to be checked against.
+    /// </summary>
+    public CitadelArmorTypePrototype ArmorType;
+
+    /// <summary>
+    /// Flags for the damage instance.
+    /// </summary>
+    public DamageFlags Flags;
 }
