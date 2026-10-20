@@ -18,4 +18,9 @@ public enum ArmorModel
     /// Generally used for standard physical damage, energetic blasts, etc.
     /// </summary>
     Dynamic = 1,
+
+    /// <summary>
+    /// Only simulates armor as a multiplier, ignoring soak, deflect, and tier.
+    /// </summary>
+    Multiplier = 2,
 }

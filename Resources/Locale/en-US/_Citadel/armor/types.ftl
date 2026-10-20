@@ -1,0 +1,10 @@
+citadel-armor-type-blunt = Blunt
+citadel-armor-type-slash = Slash
+citadel-armor-type-pierce = Pierce
+citadel-armor-type-laser = Laser
+citadel-armor-type-electric = Electric
+citadel-armor-type-bomb = Bomb
+citadel-armor-type-radiation = Radiation
+citadel-armor-type-permeability = Permeability
+citadel-armor-type-reactivity = Reactivity
+citadel-armor-type-particle = Particle

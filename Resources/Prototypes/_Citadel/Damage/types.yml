@@ -1,0 +1,7 @@
+- type: citadelDamageType
+  id: Brute
+  name: citadel-damage-type-brute
+
+- type: citadelDamageType
+  id: Burn
+  name: citadel-damage-type-burn

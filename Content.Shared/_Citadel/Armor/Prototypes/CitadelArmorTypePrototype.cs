@@ -10,7 +10,7 @@ namespace Content.Shared._Citadel.Armor.Prototypes;
 [Prototype] [CitadelPrototype]
 public sealed partial class CitadelArmorTypePrototype : ICitadelPrototype
 {
-    [DataField(required: true)]
+    [DataField("model", required: true)]
 #warning serde
     public ArmorModel Modelling = ArmorModel.Flat;
 

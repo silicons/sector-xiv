@@ -1,0 +1,49 @@
+- type: citadelArmorType
+  id: Blunt
+  name: citadel-armor-type-blunt
+  model: dynamic
+
+- type: citadelArmorType
+  id: Slash
+  name: citadel-armor-type-slash
+  model: dynamic
+
+- type: citadelArmorType
+  id: Pierce
+  name: citadel-armor-type-pierce
+  model: dynamic
+
+- type: citadelArmorType
+  id: Laser
+  name: citadel-armor-type-laser
+  model: dynamic
+
+- type: citadelArmorType
+  id: Electric
+  name: citadel-armor-type-electric
+  model: multiplier
+
+- type: citadelArmorType
+  id: Bomb
+  name: citadel-armor-type-bomb
+  model: multiplier
+
+- type: citadelArmorType
+  id: Radiation
+  name: citadel-armor-type-radiation
+  model: multiplier
+
+- type: citadelArmorType
+  id: Permeability
+  name: citadel-armor-type-permeability
+  model: multiplier
+
+- type: citadelArmorType
+  id: Reactivity
+  name: citadel-armor-type-reactivity
+  model: multiplier
+
+- type: citadelArmorType
+  id: Particle
+  name: citadel-armor-type-particle
+  model: multiplier
