@@ -7,4 +7,10 @@ public sealed class InsufficientArgumentsError(int expected, int available) : Er
 {
     public readonly int Available = available;
     public readonly int Expected = expected;
+
+    public override string Format()
+    {
+#warning InsufficientArgumentsError.Format is not implemented.
+        throw new NotImplementedException();
+    }
 }

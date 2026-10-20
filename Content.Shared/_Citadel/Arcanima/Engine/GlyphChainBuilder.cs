@@ -18,7 +18,14 @@ public sealed class GlyphChainBuilder
      * <br />
      * Glyphs may also jump to one another.
      */
-    public Glyph[] Glyphs { get; }
+    public Glyph[] Glyphs
+    {
+        get
+        {
+#warning GlyphChainBuilder.Glyphs is not implemented.
+            throw new NotImplementedException();
+        }
+    }
 
     public Identifier Id { get; }
 }

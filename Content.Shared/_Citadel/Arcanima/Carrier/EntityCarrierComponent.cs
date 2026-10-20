@@ -17,5 +17,6 @@ public sealed class EntityCarrierState : ComponentState
 {
     public EntityCarrierState(EntityCarrierComponent component)
     {
+#warning EntityCarrierState population is not implemented.
     }
 }

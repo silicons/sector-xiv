@@ -11,4 +11,10 @@ public sealed class BadInputTypeError(Type used, Type[] expected, int index) : E
     public readonly Type[] Expected = expected;
     public readonly int Index = index;
     public readonly Type Used = used;
+
+    public override string Format()
+    {
+#warning BadInputTypeError.Format is not implemented.
+        throw new NotImplementedException();
+    }
 }

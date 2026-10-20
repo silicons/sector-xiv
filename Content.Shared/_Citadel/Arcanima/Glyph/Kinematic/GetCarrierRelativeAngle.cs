@@ -9,7 +9,12 @@ public sealed class GetCarrierRelativeAngle : Engine.Glyph
 {
     public override ExecutionResult Execute(ExecutionContext context)
     {
-#warning GetCarrierFacing.Execute is not implemented.
+#warning GetCarrierRelativeAngle.Execute is not implemented.
         throw new NotImplementedException();
+    }
+
+    public override Engine.Glyph Copy()
+    {
+        return new GetCarrierRelativeAngle();
     }
 }

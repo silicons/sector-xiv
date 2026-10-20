@@ -14,4 +14,9 @@ public sealed class Pause : Engine.Glyph
 #warning Pause.Execute is not implemented.
         throw new NotImplementedException();
     }
+
+    public override Engine.Glyph Copy()
+    {
+        return new Pause();
+    }
 }

@@ -32,9 +32,9 @@ public sealed class CitadelPrototype : Attribute
 /// </summary>
 public sealed class CitadelPrototypeReadLock
 {
-    private readonly ICitadelPrototype _prototype;
+    private readonly CitadelPrototype _prototype;
 
-    public CitadelPrototypeReadLock(ICitadelPrototype prototype, string accessorName)
+    public CitadelPrototypeReadLock(CitadelPrototype prototype, string accessorName)
     {
 #warning figure out how to do this properly because a thread cannot be locking individually, when it touches prototypes it needs to lock before the task begins.
         _prototype = prototype;
@@ -47,7 +47,7 @@ public sealed class CitadelPrototypeReadLock
     }
 
     // ReSharper disable once InconsistentlySynchronizedField - we access it before to do a cheap reader lock acq/rel.
-    public ref readonly ICitadelPrototype Prototype => ref _prototype;
+    public ref readonly CitadelPrototype Prototype => ref _prototype;
 
     public void Dispose()
     {

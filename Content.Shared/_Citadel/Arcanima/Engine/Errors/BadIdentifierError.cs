@@ -9,4 +9,10 @@ namespace Content.Shared._Citadel.Arcanima.Engine.Errors;
 public sealed class BadIdentifierError(Identifier used) : Error
 {
     public readonly Identifier Identifier = used;
+
+    public override string Format()
+    {
+#warning BadIdentifierError.Format is not implemented.
+        throw new NotImplementedException();
+    }
 }

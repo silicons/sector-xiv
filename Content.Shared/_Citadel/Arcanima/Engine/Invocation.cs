@@ -5,6 +5,7 @@ namespace Content.Shared._Citadel.Arcanima.Engine;
  */
 public sealed class Invocation
 {
+#warning Invocation execution and resource accounting are not implemented.
     private List<CarrierThread> _carriers = new();
 
     /**

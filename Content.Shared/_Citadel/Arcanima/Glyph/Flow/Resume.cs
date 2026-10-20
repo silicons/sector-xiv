@@ -14,4 +14,9 @@ public sealed class Resume : Engine.Glyph
 #warning Resume.Execute is not implemented.
         throw new NotImplementedException();
     }
+
+    public override Engine.Glyph Copy()
+    {
+        return new Resume();
+    }
 }

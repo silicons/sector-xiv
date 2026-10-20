@@ -25,6 +25,7 @@ public sealed class JigsawPiece<TPieceData, TTileData, TEdgeData>(JigsawPattern<
 
     public object Clone()
     {
-#warning implement this
+#warning JigsawPiece.Clone is not implemented.
+        throw new NotImplementedException();
     }
 }

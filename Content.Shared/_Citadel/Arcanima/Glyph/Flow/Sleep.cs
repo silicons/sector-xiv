@@ -14,4 +14,9 @@ public sealed class Sleep : Engine.Glyph
 #warning Sleep.Execute is not implemented.
         throw new NotImplementedException();
     }
+
+    public override Engine.Glyph Copy()
+    {
+        return new Sleep();
+    }
 }
