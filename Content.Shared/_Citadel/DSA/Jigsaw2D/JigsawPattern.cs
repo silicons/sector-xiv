@@ -83,9 +83,18 @@ public sealed class JigsawPattern<TTileData, TEdgeData> : ICloneable
     }
 
     /// <summary>
-    /// Enumerates every cell, including empty cells, in row-major order in the given orientation.
-    /// Returned coordinates start at zero in the rotated pattern; views capture the original tile references
-    /// and resolve rotated edges on demand. East and West swap the pattern's width and height.
+    /// Enumerates every cell, including empty cells, from bottom to top in the requested orientation.
+    /// <br />
+    /// <ul>
+    /// <li>Starts at (0, 0), scans left to right with increasing X, then advances to Y = 1, and so on.</li>
+    /// <li>Non-North orientations scan as if the pattern were already rotated clockwise:
+    /// East = 90 degrees, South = 180 degrees, West = 270 degrees.</li>
+    /// <li>Returned X/Y coordinates belong to the rotated pattern, with (0, 0) at its bottom-left corner.</li>
+    /// <li>East and West swap the pattern's width and height.</li>
+    /// <li>Views capture the original tile references and resolve rotated edges on demand.</li>
+    /// </ul>
+    /// <br />
+    /// Each row is completed before advancing to the next row above it, regardless of orientation.
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException">The orientation is not a single cardinal direction.</exception>
     public IEnumerable<(int X, int Y, JigsawTileView<TTileData, TEdgeData> Tile)> EnumerateTiles(
