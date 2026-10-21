@@ -1,10 +1,9 @@
-using System.Threading;
+using JetBrains.Annotations;
 
 namespace Content.Shared._Citadel.Prototypes;
 
 /// <summary>
-/// Citadel prototype base. Contains synchronization and database / concurrent access mechanisms,
-/// as well as access restrictions.
+/// Citadel prototype base. Defines specific things like database keys for persistence.
 /// <br />
 /// All game prototypes that need to be modifiable / are part of the general world-simulation should implement
 /// this eventually.
@@ -12,10 +11,16 @@ namespace Content.Shared._Citadel.Prototypes;
 /// <br />
 /// TODO: describe why the hell we need this, synchornization, database, implement
 /// </summary>
-public sealed class CitadelPrototype : Attribute
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
+[BaseTypeRequired(typeof(ICitadelPrototype))]
+[MeansImplicitUse]
+[MeansDataDefinition]
+public sealed class CitadelPrototypeAttribute : Attribute
 {
-    internal ReaderWriterLock CoherenceLock { get; } = new();
-    internal List<CitadelPrototypeReadLock> ActiveSyncLocks { get; } = new();
+    public CitadelPrototypeAttribute(int placeholder = 0)
+    {
+        // don't convert to primary constructor
+    }
 
     private void marker()
     {

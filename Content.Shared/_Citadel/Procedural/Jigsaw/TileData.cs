@@ -7,7 +7,7 @@ public struct TileData()
      *
      * The higher it is, the more prioritized it is to be joined first.
      *
-     * Pieces that are more picky generally be more weighty, because
+     * Pieces that are more picky generally should be more weighty, because
      * otherwise, less picky pieces may get 'first pick' and choke them out.
      */
     public int Weight = 0;

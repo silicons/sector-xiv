@@ -34,6 +34,14 @@ public sealed partial class CitadelDamageTypePrototype : ICitadelPrototype
     /// </summary>
     public float Multiplier { get; private set; } = 1.0f;
 
+    /// <summary>
+    /// Synchronization holder for prototype updates.
+    /// </summary>
+    public CitadelPrototypeSync Sync { get; } = new();
+
+    /// <summary>
+    /// Primary ID for the prototype.
+    /// </summary>
     [IdDataField]
     public string ID { get; private set; } = default!;
 }

@@ -21,6 +21,14 @@ public sealed partial class CitadelArmorTypePrototype : ICitadelPrototype
     [ViewVariables(VVAccess.ReadOnly)]
     public string LocalizedName => Loc.GetString(Name);
 
+    /// <summary>
+    /// Synchronization holder for prototype updates.
+    /// </summary>
+    public CitadelPrototypeSync Sync { get; } = new();
+
+    /// <summary>
+    /// Primary ID for the prototype.
+    /// </summary>
     [IdDataField]
     public string ID { get; private set; } = default!;
 }
