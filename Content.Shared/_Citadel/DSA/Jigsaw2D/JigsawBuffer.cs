@@ -5,7 +5,11 @@ namespace Content.Shared._Citadel.DSA.Jigsaw2D;
 /// <summary>
 /// A buffer to place jigsaw pieces on.
 /// <br />
+/// <br />
 /// To be intuitive to humans, indices internally are north = ++y, south = --y, east = ++x, west = --x
+/// <br />
+/// This means the JigsawBuffer - and its contents - are always
+/// facing NORTH, regardless of the orientation of the pieces placed on it.
 /// </summary>
 /// <typeparam name="TPieceData">
 /// Data stored on placed pieces.
