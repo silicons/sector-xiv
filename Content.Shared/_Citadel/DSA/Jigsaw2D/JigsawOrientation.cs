@@ -12,4 +12,9 @@ public enum JigsawOrientation
     East = 1 << 2,
     South = 1 << 1,
     West = 1 << 3,
+
+    /// <summary>
+    /// All non-NORTH orientations are considered a clockwise rotation.
+    /// </summary>
+    NaturalOrientation = North,
 }
