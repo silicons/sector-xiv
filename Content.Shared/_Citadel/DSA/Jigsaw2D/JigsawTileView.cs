@@ -25,7 +25,7 @@ public readonly struct JigsawTileView<TTileData, TEdgeData>(
     /// </summary>
     public JigsawOrientation Orientation { get; } = orientation;
 
-    public bool HasTile => Tile != null;
+    public bool HasTile => RawTile != null;
 
     /// <summary>
     /// Gets a reference to the tile's struct data without copying it.
@@ -33,10 +33,10 @@ public readonly struct JigsawTileView<TTileData, TEdgeData>(
     /// <exception cref="InvalidOperationException">The view is empty.</exception>
     public ref TTileData GetData()
     {
-        if (Tile == null)
+        if (RawTile == null)
             throw new InvalidOperationException("Cannot get data from an empty view.");
 
-        return ref Tile.Data;
+        return ref RawTile.Data;
     }
 
     /// <summary>
@@ -45,6 +45,6 @@ public readonly struct JigsawTileView<TTileData, TEdgeData>(
     /// </summary>
     public JigsawEdge<TEdgeData>? GetEdge(JigsawOrientation orientation)
     {
-        return Tile?.GetRelativeEdge(orientation, Orientation);
+        return RawTile?.GetRelativeEdge(orientation, Orientation);
     }
 }
