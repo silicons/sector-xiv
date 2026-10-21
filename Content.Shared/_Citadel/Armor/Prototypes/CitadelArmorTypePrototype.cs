@@ -14,6 +14,7 @@ public sealed partial class CitadelArmorTypePrototype : ICitadelPrototype
 #warning serde
     public ArmorModel Modelling = ArmorModel.Flat;
 
+
     [DataField(required: true)]
     private LocId Name { get; set; }
 
