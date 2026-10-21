@@ -24,6 +24,9 @@
     <File Path="README.md" />
   </Folder>
   <Project Path="Content.Benchmarks/Content.Benchmarks.csproj" />
+  <Project Path="Content.Citadel.Client/Content.Citadel.Client.shproj" />
+  <Project Path="Content.Citadel.Server/Content.Citadel.Server.shproj" />
+  <Project Path="Content.Citadel.Shared/Content.Citadel.Shared.shproj" />
   <Project Path="Content.Client/Content.Client.csproj" />
   <Project Path="Content.IntegrationTests/Content.IntegrationTests.csproj" />
   <Project Path="Content.MapRenderer/Content.MapRenderer.csproj" />
