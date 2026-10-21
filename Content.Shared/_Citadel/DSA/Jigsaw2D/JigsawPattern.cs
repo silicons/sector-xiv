@@ -12,11 +12,6 @@ public sealed class JigsawPattern<TTileData, TEdgeData> : ICloneable
     where TEdgeData : struct
 {
     /// <summary>
-    /// A null-ref that may be returned.
-    /// </summary>
-    private static JigsawTile<TTileData, TEdgeData>? _nullTile;
-
-    /// <summary>
     /// Tiles list. Created and sized at init.
     /// <br />
     /// Row-major, index = (y * width) + x.
@@ -46,18 +41,23 @@ public sealed class JigsawPattern<TTileData, TEdgeData> : ICloneable
     {
         for (var i = 0; i < clone._tiles.Length; i++)
         {
-            _tiles[i] = clone._tiles[i];
+            _tiles[i] = clone._tiles[i]?.Clone();
         }
     }
 
     public int Width { get; }
     public int Height { get; }
 
-    public object Clone()
+    public JigsawPattern<TTileData, TEdgeData> Clone()
     {
         return new JigsawPattern<TTileData, TEdgeData>(this);
     }
 
+    object ICloneable.Clone() => Clone();
+
+    /// <summary>
+    /// Places an independent clone of the tile and its edges.
+    /// </summary>
     public bool PlaceTile(JigsawTile<TTileData, TEdgeData> jigsawTile,
         int x,
         int y,
@@ -71,15 +71,15 @@ public sealed class JigsawPattern<TTileData, TEdgeData> : ICloneable
 
         var index = IndexOf(x, y);
         replaced = _tiles[index];
-        _tiles[index] = jigsawTile;
+        _tiles[index] = jigsawTile.Clone();
         return true;
     }
 
-    public ref JigsawTile<TTileData, TEdgeData>? GetTile(int x, int y)
+    public JigsawTile<TTileData, TEdgeData>? GetTile(int x, int y)
     {
         if (!InBounds(x, y))
-            return ref _nullTile;
-        return ref _tiles[IndexOf(x, y)];
+            return null;
+        return _tiles[IndexOf(x, y)];
     }
 
     /// <summary>
@@ -95,7 +95,6 @@ public sealed class JigsawPattern<TTileData, TEdgeData> : ICloneable
 
     private bool InBounds(int x, int y)
     {
-        var index = IndexOf(x, y);
-        return index >= 0 && index < _tiles.Length;
+        return x >= 0 && x < Width && y >= 0 && y < Height;
     }
 }
