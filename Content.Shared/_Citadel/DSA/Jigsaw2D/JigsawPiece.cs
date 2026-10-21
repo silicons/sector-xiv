@@ -28,14 +28,14 @@ public sealed class JigsawPiece<TPieceData, TTileData, TEdgeData>(JigsawPattern<
     where TEdgeData : struct
 {
     public readonly JigsawPattern<TTileData, TEdgeData> JigsawPattern =
-        jigsawPattern.Clone() as JigsawPattern<TTileData, TEdgeData> ??
-        throw new InvalidOperationException("Null pattern in JigsawPiece constructor.");
+        jigsawPattern.Clone();
 
     public TPieceData Data;
 
-    public object Clone()
+    public JigsawPiece<TPieceData, TTileData, TEdgeData> Clone()
     {
-#warning JigsawPiece.Clone is not implemented.
-        throw new NotImplementedException();
+        return new JigsawPiece<TPieceData, TTileData, TEdgeData>(JigsawPattern) { Data = Data };
     }
+
+    object ICloneable.Clone() => Clone();
 }
