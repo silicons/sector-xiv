@@ -10,4 +10,27 @@ namespace Content.Shared._Citadel.Worldgen.GridStructures;
 [RegisterComponent]
 public sealed partial class GridStructureTileComponent : Component
 {
+    /// <summary>
+    /// Grid alignment of the component.
+    /// </summary>
+    [DataField("alignment")]
+    public int Alignment { get; private set; }
+
+    /// <summary>
+    /// Weight of the tile. Higher weight tiles will be matched for first.
+    /// </summary>
+    [DataField("weight")]
+    public int Weight { get; private set; }
+
+    [DataField("north")]
+    public GridStructureEdge North { get; private set; }
+
+    [DataField("south")]
+    public GridStructureEdge South { get; private set; }
+
+    [DataField("east")]
+    public GridStructureEdge East { get; private set; }
+
+    [DataField("west")]
+    public GridStructureEdge West { get; private set; }
 }
