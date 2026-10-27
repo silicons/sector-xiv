@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace Content.Shared._Citadel.Worldgen.GridStructures;
 
 /**
@@ -5,6 +7,8 @@ namespace Content.Shared._Citadel.Worldgen.GridStructures;
  *
  * These are what's actually fed to the generator.
  */
-public sealed class GridStructurePiece
+[DataDefinition]
+public sealed partial class GridStructurePieceAnalysis
 {
+    public ImmutableList<GridStructurePiece> Pieces;
 }

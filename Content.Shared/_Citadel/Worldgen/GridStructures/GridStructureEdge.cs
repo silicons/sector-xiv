@@ -7,23 +7,23 @@ public sealed partial class GridStructureEdge
     /// Weight of the edge. Higher weight edges will be matched for first.
     /// </summary>
     [DataField("weight")]
-    public int Weight { get; private set; }
+    public int Weight { get; internal set; }
 
     /// <summary>
     /// Bitmask this edge counts as.
     /// </summary>
     [DataField("match")]
-    public ulong Match { get; private set; }
+    public ulong Match { get; internal set; }
 
     /// <summary>
     /// Bitmask this edge requires to be present on the other side.
     /// </summary>
     [DataField("require")]
-    public ulong Require { get; private set; }
+    public ulong Require { get; internal set; }
 
     /// <summary>
     /// Bitmask this edge forbids to be present on the other side.
     /// </summary>
     [DataField("forbid")]
-    public ulong Forbid { get; private set; }
+    public ulong Forbid { get; internal set; }
 }
