@@ -7,6 +7,7 @@ public sealed class GridStructureAnalyzer
     /// </summary>
     /// <param name="pack"></param>
     /// <returns></returns>
+    /// <exception cref="GridStructureAnalyzerException">On analysis failure.</exception>
     private GridStructurePackAnalysis Analyze(GridStructurePackPrototype pack)
     {
 #warning impl
