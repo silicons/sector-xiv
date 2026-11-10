@@ -1,3 +1,5 @@
+using Content.Shared._Citadel.Worldgen.Prototypes;
+
 namespace Content.Shared._Citadel.Worldgen.GridStructures;
 
 public sealed class GridStructureAnalyzer

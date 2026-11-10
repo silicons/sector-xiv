@@ -2,7 +2,7 @@ using Content.Shared._Citadel.Prototypes;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
-namespace Content.Shared._Citadel.Worldgen.Submap;
+namespace Content.Shared._Citadel.Worldgen.Prototypes;
 
 /// <summary>
 /// A submap to be spawned.
