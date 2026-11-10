@@ -1,4 +1,6 @@
-namespace Content.Shared._Citadel.Worldgen.Engine.Tokens.Fixtures;
+using Content.Shared._Citadel.Worldgen.Engine.Tokens;
+
+namespace Content.Shared._Citadel.Worldgen.GridStructures;
 
 public sealed class GridStructureBuilder
 {
@@ -13,7 +15,7 @@ public sealed class GridStructureBuilder
 /// <br />
 /// It will be placed centered on the token.
 /// </summary>
-public sealed class GridStructure(GridStructureBuilder builder) : Fixture
+public sealed class GridStructureToken(GridStructureBuilder builder) : Fixture
 {
     /// <summary>
     /// Fuse the token to the global map grid.

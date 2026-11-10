@@ -9,7 +9,7 @@ namespace Content.Shared._Citadel.Worldgen.Engine.Tokens;
 public abstract class Spot : WorldgenToken
 {
     /// <summary>
-    /// Approximate radius.
+    /// Approximate radius. Spots are always represented as circles.
     /// </summary>
     public readonly float Radius = 0;
 }

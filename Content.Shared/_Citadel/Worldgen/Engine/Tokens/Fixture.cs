@@ -4,7 +4,7 @@ namespace Content.Shared._Citadel.Worldgen.Engine.Tokens;
 /// A large fixture that takes up space.
 /// <br />
 /// <br />
-/// Fixtures will stop each other from overlapping.
+/// Fixtures generally shouldn't overlap each other.
 /// </summary>
 public abstract class Fixture : WorldgenToken
 {

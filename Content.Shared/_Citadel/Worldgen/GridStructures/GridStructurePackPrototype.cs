@@ -1,3 +1,4 @@
+using Content.Shared._Citadel.Prototypes;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -7,7 +8,8 @@ namespace Content.Shared._Citadel.Worldgen.GridStructures;
 /// This is a prototype for...
 /// </summary>
 [Prototype]
-public sealed partial class GridStructurePackPrototype : IPrototype
+[CitadelPrototype]
+public sealed partial class GridStructurePackPrototype : ICitadelPrototype
 {
     /// <summary>
     /// The path of the map file with the pieces.
