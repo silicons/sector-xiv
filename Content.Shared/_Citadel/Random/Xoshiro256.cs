@@ -1,26 +1,35 @@
+using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
+
 namespace Content.Shared._Citadel.Random;
 
 /// <summary>
 /// An implementation of the Xoshiro256** random number generator algorithm.
+/// <br />
+/// <br />
+/// TODO(silicons): Generalize this file to linear pseudorandom number generators. The polynomial terms and degrees are
+/// currently hardcoded.
 /// </summary>
 /// <param name="seed"></param>
+[PublicAPI]
 public struct Xoshiro256
 {
-    public ulong Iterations { get; private set; }
+    [InlineArray(4)]
+    public struct Xoshiro256State
+    {
+        public ulong value;
+    }
 
-    private ulong _state1;
-    private ulong _state2;
-    private ulong _state3;
-    private ulong _state4;
+    private Xoshiro256State _state;
 
     public Xoshiro256(ulong seed)
     {
         var splitMix = new SplitMix64(seed);
-        _state1 = splitMix.NextInt();
-        _state2 = splitMix.NextInt();
-        _state3 = splitMix.NextInt();
-        _state4 = splitMix.NextInt();
-        Iterations = 0;
+
+        for (var i = 0; i < 4; i++)
+        {
+            _state[i] = splitMix.NextInt();
+        }
     }
 
     /// <summary>
@@ -36,20 +45,18 @@ public struct Xoshiro256
 
     public ulong NextInt()
     {
-        Iterations++;
+        var result = _rotl(_state[0] + _state[3], 23) + _state[0];
 
-        var result = _rotl(_state1 + _state4, 23) + _state1;
+        var t = _state[1] << 17;
 
-        var t = _state2 << 17;
+        _state[2] ^= _state[0];
+        _state[3] ^= _state[1];
+        _state[0] ^= _state[2];
+        _state[1] ^= _state[3];
 
-        _state3 ^= _state1;
-        _state4 ^= _state2;
-        _state2 ^= _state3;
-        _state1 ^= _state4;
+        _state[2] ^= t;
 
-        _state3 ^= t;
-
-        _state4 = _rotl(_state4, 45);
+        _state[3] = _rotl(_state[3], 45);
 
         return result;
     }
@@ -57,5 +64,238 @@ public struct Xoshiro256
     public double NextFloat()
     {
         return NextInt() / (double)ulong.MaxValue;
+    }
+
+    private static readonly Xoshiro256State StateJumpMagic = CreateStateJumpMagic();
+
+    private static Xoshiro256State CreateStateJumpMagic()
+    {
+        var stateJumpMagic = new Xoshiro256State();
+        stateJumpMagic[0] = 0x180ec6d33cfd0aba;
+        stateJumpMagic[1] = 0xd5a61266f0c9392c;
+        stateJumpMagic[2] = 0xa9582618e03fc9aa;
+        stateJumpMagic[3] = 0x39abdc4529b1661c;
+        return stateJumpMagic;
+    }
+
+    /// <summary>
+    /// Jumps forwards by 2^128 positions.
+    /// Can be used to generate 2^128 non-overlapping subsequences for parallel computations.
+    /// </summary>
+    public void Jump()
+    {
+        JumpImpl(StateJumpMagic);
+    }
+
+    private static readonly Xoshiro256State StateLongJumpMagic = CreateStateLongJumpMagic();
+
+    private static Xoshiro256State CreateStateLongJumpMagic()
+    {
+        var stateLongJumpMagic = new Xoshiro256State();
+        stateLongJumpMagic[0] = 0x76e15d3efefdcbbf;
+        stateLongJumpMagic[1] = 0xc5004e441c522fb3;
+        stateLongJumpMagic[2] = 0x77710069854ee241;
+        stateLongJumpMagic[3] = 0x39109bb02acbe635;
+        return stateLongJumpMagic;
+    }
+
+    /// <summary>
+    /// Jumps forwards by 2^192 positions.
+    /// </summary>
+    public void LongJump()
+    {
+        JumpImpl(StateLongJumpMagic);
+    }
+
+    private void JumpImpl(in Xoshiro256State jumpMagic)
+    {
+        var newState = new Xoshiro256State();
+        newState[0] = 0;
+        newState[1] = 0;
+        newState[2] = 0;
+        newState[3] = 0;
+
+        for (var i = 0; i < 4; i++)
+        {
+            for (var b = 0; b < 64; b++)
+            {
+                if ((jumpMagic[i] & (1UL << b)) != 0)
+                {
+                    newState[0] ^= _state[0];
+                    newState[1] ^= _state[1];
+                    newState[2] ^= _state[2];
+                    newState[3] ^= _state[3];
+                }
+
+                NextInt();
+            }
+        }
+
+        for (var i = 0; i < 4; i++)
+        {
+            _state[i] = newState[i];
+        }
+    }
+
+    private static readonly Xoshiro256State CharacteristicPolynomial = CreateCharacteristicPolynomial();
+
+    private static Xoshiro256State CreateCharacteristicPolynomial()
+    {
+        var characteristicPolynomial = new Xoshiro256State();
+        characteristicPolynomial[0] = 0x9d116f2bb0f0f001;
+        characteristicPolynomial[1] = 0x0280002bcefd1a5e;
+        characteristicPolynomial[2] = 0x04b4edcf26259f85;
+        characteristicPolynomial[3] = 0x0003c03c3f3ecb19;
+        return characteristicPolynomial;
+    }
+
+    // ReSharper disable once IdentifierTypo
+    private static void F2X_mulx(ref Xoshiro256State state)
+    {
+        ulong carry = 0;
+        for (var i = 0; i < 4; i++)
+        {
+            var nextCarry = state[i] >> 63;
+            state[i] = (state[i] << 1) | carry;
+            carry = nextCarry;
+        }
+
+        var top = (int)carry;
+
+        if (top != 0)
+        {
+            for (var i = 0; i < 4; i++)
+            {
+                state[i] ^= CharacteristicPolynomial[i];
+            }
+        }
+    }
+
+    private static void F2X_mulmod(ref Xoshiro256State a, in Xoshiro256State b)
+    {
+        var r = new Xoshiro256State();
+        r[0] = 0;
+        r[1] = 0;
+        r[2] = 0;
+        r[3] = 0;
+
+        for (var k = 255; k >= 0; k--)
+        {
+            F2X_mulx(ref r);
+            if (((a[k >> 6] >> (k & 63)) & 1) != 0)
+            {
+                for (var i = 0; i < 4; i++)
+                {
+                    r[i] ^= b[i];
+                }
+            }
+        }
+
+        for (var i = 0; i < 4; i++)
+        {
+            a[i] = r[i];
+        }
+    }
+
+    private static void F2X_jumpPolyCE(ulong c, uint e, ref Xoshiro256State result)
+    {
+        result[0] = 1;
+        result[1] = 0;
+        result[2] = 0;
+        result[3] = 0;
+
+        for (var k = 63; k >= 0; k--)
+        {
+            F2X_mulmod(ref result, result);
+            if (((c >> k) & 1) != 0)
+                F2X_mulx(ref result);
+        }
+
+        while (e-- > 0)
+        {
+            F2X_mulmod(ref result, result);
+        }
+    }
+
+    private static Xoshiro256State F2X_jumpPolyN(in Xoshiro256State jump)
+    {
+        var result = new Xoshiro256State();
+
+        result[0] = 1;
+        result[1] = 0;
+        result[2] = 0;
+        result[3] = 0;
+
+        for (var k = 255; k >= 0; k--)
+        {
+            F2X_mulmod(ref result, result);
+            if (((jump[k >> 6] >> (k & 63)) & 1) != 0)
+                F2X_mulx(ref result);
+        }
+
+        return result;
+    }
+
+    private void ApplyJumpPolynomial(in Xoshiro256State poly)
+    {
+        var newState = new Xoshiro256State();
+        newState[0] = 0;
+        newState[1] = 0;
+        newState[2] = 0;
+        newState[3] = 0;
+
+        for (var i = 0; i < 4; i++)
+        {
+            for (var b = 0; b < 64; b++)
+            {
+                if ((poly[i] & (1UL << b)) != 0)
+                {
+                    newState[0] ^= _state[0];
+                    newState[1] ^= _state[1];
+                    newState[2] ^= _state[2];
+                    newState[3] ^= _state[3];
+                }
+
+                NextInt();
+            }
+        }
+
+        for (var i = 0; i < 4; i++)
+        {
+            _state[i] = newState[i];
+        }
+    }
+
+    /// <summary>
+    /// Jumps forwards by c * 2^e positions.
+    /// </summary>
+    /// <param name="c"></param>
+    /// <param name="e"></param>
+    // ReSharper disable once InconsistentNaming
+    public void JumpCE(ulong c, uint e)
+    {
+        var poly = new Xoshiro256State();
+        F2X_jumpPolyCE(c, e, ref poly);
+        ApplyJumpPolynomial(poly);
+    }
+
+    /// <summary>
+    /// General arbitrary-jump function; Jumps forwards by
+    /// n = jump[0] + jump[1] * 2^64 + ... positions.
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <param name="c"></param>
+    /// <param name="d"></param>
+    public void JumpN(ulong a, ulong b, ulong c, ulong d)
+    {
+        var jump = new Xoshiro256State();
+        jump[0] = a;
+        jump[1] = b;
+        jump[2] = c;
+        jump[3] = d;
+
+        var poly = F2X_jumpPolyN(jump);
+        ApplyJumpPolynomial(poly);
     }
 }

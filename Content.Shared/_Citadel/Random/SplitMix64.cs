@@ -1,17 +1,17 @@
+using JetBrains.Annotations;
+
 namespace Content.Shared._Citadel.Random;
 
 /// <summary>
 /// A simple implementation of the SplitMix64 random number generator algorithm.
 /// </summary>
 /// <param name="seed"></param>
+[PublicAPI]
 public struct SplitMix64(ulong seed)
 {
-    private ulong _state = seed;
+    private const ulong StateMagic = 0x9e3779b97f4a7c15;
 
-    /// <summary>
-    /// The number of iterations that have been performed by the generator.
-    /// </summary>
-    public ulong Iterations { get; private set; }
+    private ulong _state = seed;
 
     /// <summary>
     /// Generates a random 64-bit integer using the SplitMix64 algorithm.
@@ -19,9 +19,7 @@ public struct SplitMix64(ulong seed)
     /// <returns></returns>
     public ulong NextInt()
     {
-        Iterations++;
-
-        _state += 0x9e3779b97f4a7c15; // increment the state variable
+        _state += StateMagic; // increment the state variable
         var z = _state; // copy the state to a working variable
 
         // xor the variable with the variable right bit shifted 30
@@ -44,5 +42,14 @@ public struct SplitMix64(ulong seed)
     {
         // divide by 2^64 to return a value between 0 and 1
         return NextInt() / (double)ulong.MaxValue;
+    }
+
+    /// <summary>
+    /// Jumps the generator forward by a specified number of iterations.
+    /// </summary>
+    /// <param name="iterations"></param>
+    public void Jump(ulong iterations)
+    {
+        _state += StateMagic * iterations;
     }
 }
