@@ -7,5 +7,4 @@ namespace Content.Shared._Citadel.Prototypes;
 /// </summary>
 public interface ICitadelPrototype : IPrototype
 {
-    // todo: synchronization stuff
 }
