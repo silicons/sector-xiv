@@ -4,18 +4,25 @@ namespace Content.Shared._Citadel.Random;
 /// A simple implementation of the SplitMix64 random number generator algorithm.
 /// </summary>
 /// <param name="seed"></param>
-public sealed class SplitMix64(ulong seed)
+public struct SplitMix64(ulong seed)
 {
-    private ulong state = seed;
+    private ulong _state = seed;
+
+    /// <summary>
+    /// The number of iterations that have been performed by the generator.
+    /// </summary>
+    public ulong Iterations { get; private set; }
 
     /// <summary>
     /// Generates a random 64-bit integer using the SplitMix64 algorithm.
     /// </summary>
     /// <returns></returns>
-    public ulong nextInt()
+    public ulong NextInt()
     {
-        state += 0x9e3779b97f4a7c15; // increment the state variable
-        var z = state; // copy the state to a working variable
+        Iterations++;
+
+        _state += 0x9e3779b97f4a7c15; // increment the state variable
+        var z = _state; // copy the state to a working variable
 
         // xor the variable with the variable right bit shifted 30
         // then multiply by a constant
@@ -33,9 +40,9 @@ public sealed class SplitMix64(ulong seed)
     /// Generates a random floating-point number between 0 and 1 using the SplitMix64 algorithm.
     /// </summary>
     /// <returns></returns>
-    public double nextFloat()
+    public double NextFloat()
     {
         // divide by 2^64 to return a value between 0 and 1
-        return nextInt() / (double)ulong.MaxValue;
+        return NextInt() / (double)ulong.MaxValue;
     }
 }
