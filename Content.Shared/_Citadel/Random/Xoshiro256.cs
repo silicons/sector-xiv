@@ -13,13 +13,13 @@ namespace Content.Shared._Citadel.Random;
 /// </summary>
 /// <param name="seed"></param>
 [PublicAPI]
-public struct Xoshiro256 : ICitadelRandom
+public sealed class Xoshiro256 : ICitadelRandom
 {
-    [InlineArray(4)]
-    public struct Xoshiro256State
-    {
-        public ulong value;
-    }
+    private static readonly Xoshiro256State StateJumpMagic = CreateStateJumpMagic();
+
+    private static readonly Xoshiro256State StateLongJumpMagic = CreateStateLongJumpMagic();
+
+    private static readonly Xoshiro256State CharacteristicPolynomial = CreateCharacteristicPolynomial();
 
     private Xoshiro256State _state;
 
@@ -29,23 +29,12 @@ public struct Xoshiro256 : ICitadelRandom
 
         for (var i = 0; i < 4; i++)
         {
-            _state[i] = splitMix.NextInt();
+            _state[i] = splitMix.Next();
         }
     }
 
-    /// <summary>
-    /// Rotates the bits of a 64-bit unsigned integer to the left by a specified number of positions.
-    /// </summary>
-    /// <param name="x"></param>
-    /// <param name="k"></param>
-    /// <returns></returns>
-    private static ulong _rotl(ulong x, int k)
-    {
-        return BitOperations.RotateLeft(x, k);
-    }
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ulong NextInt()
+    public ulong Next()
     {
         var s0 = _state[0];
         var s1 = _state[1];
@@ -73,21 +62,30 @@ public struct Xoshiro256 : ICitadelRandom
         return result;
     }
 
-    public ulong Next()
+    /// <summary>
+    /// Rotates the bits of a 64-bit unsigned integer to the left by a specified number of positions.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="k"></param>
+    /// <returns></returns>
+    private static ulong _rotl(ulong x, int k)
     {
-        return NextInt();
+        return BitOperations.RotateLeft(x, k);
     }
+
 
     /// <summary>
-    /// Generates a random double in [0, 1).
+    /// Copies the current state into an independent generator.
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public double NextFloat()
+    public Xoshiro256 Clone()
     {
-        return NextInt() / (double)ulong.MaxValue;
+        return (Xoshiro256)MemberwiseClone();
     }
 
-    private static readonly Xoshiro256State StateJumpMagic = CreateStateJumpMagic();
+    ICitadelRandom ICitadelRandom.Clone()
+    {
+        return Clone();
+    }
 
     private static Xoshiro256State CreateStateJumpMagic()
     {
@@ -107,8 +105,6 @@ public struct Xoshiro256 : ICitadelRandom
     {
         JumpImpl(StateJumpMagic);
     }
-
-    private static readonly Xoshiro256State StateLongJumpMagic = CreateStateLongJumpMagic();
 
     private static Xoshiro256State CreateStateLongJumpMagic()
     {
@@ -148,7 +144,7 @@ public struct Xoshiro256 : ICitadelRandom
                     newState[3] ^= _state[3];
                 }
 
-                NextInt();
+                Next();
             }
         }
 
@@ -157,8 +153,6 @@ public struct Xoshiro256 : ICitadelRandom
             _state[i] = newState[i];
         }
     }
-
-    private static readonly Xoshiro256State CharacteristicPolynomial = CreateCharacteristicPolynomial();
 
     private static Xoshiro256State CreateCharacteristicPolynomial()
     {
@@ -277,7 +271,7 @@ public struct Xoshiro256 : ICitadelRandom
                     newState[3] ^= _state[3];
                 }
 
-                NextInt();
+                Next();
             }
         }
 
@@ -318,5 +312,11 @@ public struct Xoshiro256 : ICitadelRandom
 
         var poly = F2X_jumpPolyN(jump);
         ApplyJumpPolynomial(poly);
+    }
+
+    [InlineArray(4)]
+    public sealed class Xoshiro256State
+    {
+        public ulong value;
     }
 }

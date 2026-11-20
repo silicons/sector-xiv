@@ -8,7 +8,7 @@ namespace Content.Shared._Citadel.Random;
 /// </summary>
 /// <param name="seed"></param>
 [PublicAPI]
-public struct SplitMix64(ulong seed) : ICitadelRandom
+public sealed class SplitMix64(ulong seed) : ICitadelRandom
 {
     private const ulong StateMagic = 0x9e3779b97f4a7c15;
 
@@ -19,7 +19,7 @@ public struct SplitMix64(ulong seed) : ICitadelRandom
     /// </summary>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ulong NextInt()
+    public ulong Next()
     {
         _state += StateMagic; // increment the state variable
         var z = _state; // copy the state to a working variable
@@ -36,20 +36,19 @@ public struct SplitMix64(ulong seed) : ICitadelRandom
         return z ^ (z >> 31);
     }
 
-    public ulong Next()
+    /// <summary>
+    /// Copies the current state into an independent generator.
+    /// </summary>
+    public SplitMix64 Clone()
     {
-        return NextInt();
+        return (SplitMix64)MemberwiseClone();
     }
 
-    /// <summary>
-    /// Generates a random double in [0, 1) using the SplitMix64 algorithm.
-    /// </summary>
-    /// <returns></returns>
-    public double NextFloat()
+    ICitadelRandom ICitadelRandom.Clone()
     {
-        // divide by 2^64 to return a value between 0 and 1
-        return NextInt() / (double)ulong.MaxValue;
+        return Clone();
     }
+
 
     /// <summary>
     /// Jumps the generator forward by a specified number of iterations.
