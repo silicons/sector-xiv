@@ -15,6 +15,12 @@ public interface ICitadelRandom : ICloneable
 
     /// <summary>
     /// Returns the next 64-bit unsigned integer from the PRNG.
+    /// <br />
+    /// <br />
+    /// The PRNG is required, and trusted, to return
+    /// a uniform distribution over the 64 bit span.
+    /// <br />
+    /// All other functions require that for proper entropy.
     /// </summary>
     ulong Next();
 
