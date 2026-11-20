@@ -25,11 +25,11 @@ public sealed class SplitMix64Tests(ulong seed)
     public void JumpMatchesManualAdvance(ulong amount)
     {
         var manual = new SplitMix64(seed);
-        var jumped = manual;
+        var jumped = manual.Clone();
 
         for (ulong i = 0; i < amount; i++)
         {
-            manual.NextInt();
+            manual.Next();
         }
 
         jumped.Jump(amount);
@@ -37,11 +37,29 @@ public sealed class SplitMix64Tests(ulong seed)
         AssertSameSequence(manual, jumped);
     }
 
+    [Test]
+    public void CloneCopiesCurrentStateAndAdvancesIndependently()
+    {
+        var original = new SplitMix64(seed);
+        for (var i = 0; i < 7; i++)
+            original.Next();
+
+        var clone = original.Clone();
+
+        Assert.That(clone, Is.Not.SameAs(original));
+
+        for (var i = 0; i < 16; i++)
+        {
+            var expected = original.Next();
+            Assert.That(clone.Next(), Is.EqualTo(expected));
+        }
+    }
+
     private static void AssertSameSequence(SplitMix64 expected, SplitMix64 actual)
     {
         for (var i = 0; i < 16; i++)
         {
-            Assert.That(actual.NextInt(), Is.EqualTo(expected.NextInt()), $"Output {i} differs.");
+            Assert.That(actual.Next(), Is.EqualTo(expected.Next()), $"Output {i} differs.");
         }
     }
 }

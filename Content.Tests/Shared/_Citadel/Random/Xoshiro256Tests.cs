@@ -25,11 +25,11 @@ public sealed class Xoshiro256Tests(ulong seed)
     public void JumpNMatchesManualAdvance(ulong amount)
     {
         var manual = new Xoshiro256(seed);
-        var jumped = manual;
+        var jumped = manual.Clone();
 
         for (ulong i = 0; i < amount; i++)
         {
-            manual.NextInt();
+            manual.Next();
         }
 
         jumped.JumpN(amount, 0, 0, 0);
@@ -43,11 +43,11 @@ public sealed class Xoshiro256Tests(ulong seed)
     public void JumpCEMatchesManualAdvance(ulong amount)
     {
         var manual = new Xoshiro256(seed);
-        var jumped = manual;
+        var jumped = manual.Clone();
 
         for (ulong i = 0; i < amount; i++)
         {
-            manual.NextInt();
+            manual.Next();
         }
 
         jumped.JumpCE(amount, 0);
@@ -59,7 +59,7 @@ public sealed class Xoshiro256Tests(ulong seed)
     public void ThreeJumpsMatchJumpCE()
     {
         var repeated = new Xoshiro256(seed);
-        var combined = repeated;
+        var combined = repeated.Clone();
 
         for (var i = 0; i < 3; i++)
         {
@@ -75,7 +75,7 @@ public sealed class Xoshiro256Tests(ulong seed)
     public void ThreeLongJumpsMatchJumpCE()
     {
         var repeated = new Xoshiro256(seed);
-        var combined = repeated;
+        var combined = repeated.Clone();
 
         for (var i = 0; i < 3; i++)
         {
@@ -87,11 +87,29 @@ public sealed class Xoshiro256Tests(ulong seed)
         AssertSameSequence(repeated, combined);
     }
 
+    [Test]
+    public void CloneCopiesCurrentStateAndAdvancesIndependently()
+    {
+        var original = new Xoshiro256(seed);
+        for (var i = 0; i < 7; i++)
+            original.Next();
+
+        var clone = original.Clone();
+
+        Assert.That(clone, Is.Not.SameAs(original));
+
+        for (var i = 0; i < 16; i++)
+        {
+            var expected = original.Next();
+            Assert.That(clone.Next(), Is.EqualTo(expected));
+        }
+    }
+
     private static void AssertSameSequence(Xoshiro256 expected, Xoshiro256 actual)
     {
         for (var i = 0; i < 16; i++)
         {
-            Assert.That(actual.NextInt(), Is.EqualTo(expected.NextInt()), $"Output {i} differs.");
+            Assert.That(actual.Next(), Is.EqualTo(expected.Next()), $"Output {i} differs.");
         }
     }
 }

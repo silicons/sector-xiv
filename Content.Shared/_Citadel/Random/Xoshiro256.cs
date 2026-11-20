@@ -315,7 +315,7 @@ public sealed class Xoshiro256 : ICitadelRandom
     }
 
     [InlineArray(4)]
-    public sealed class Xoshiro256State
+    public struct Xoshiro256State
     {
         public ulong value;
     }
