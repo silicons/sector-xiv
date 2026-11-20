@@ -24,9 +24,6 @@
     <File Path="README.md" />
   </Folder>
   <Project Path="Content.Benchmarks/Content.Benchmarks.csproj" />
-  <Project Path="Content.Citadel.Client/Content.Citadel.Client.shproj" />
-  <Project Path="Content.Citadel.Server/Content.Citadel.Server.shproj" />
-  <Project Path="Content.Citadel.Shared/Content.Citadel.Shared.shproj" />
   <Project Path="Content.Client/Content.Client.csproj" />
   <Project Path="Content.IntegrationTests/Content.IntegrationTests.csproj" />
   <Project Path="Content.MapRenderer/Content.MapRenderer.csproj" />
@@ -44,6 +41,7 @@
   <Project Path="Content.Tools/Content.Tools.csproj" />
   <Project Path="Content.YAMLLinter/Content.YAMLLinter.csproj" />
   <Project Path="Pow3r/Pow3r.csproj" />
+  <Folder Name="/RobustToolbox/.github/" />
   <Folder Name="/RobustToolbox/.github/workflows/">
     <File Path="RobustToolbox/.github/workflows/benchmarks.yml" />
     <File Path="RobustToolbox/.github/workflows/build-all-configurations.yml" />

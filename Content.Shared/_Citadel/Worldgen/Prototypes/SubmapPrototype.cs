@@ -8,8 +8,7 @@ namespace Content.Shared._Citadel.Worldgen.Prototypes;
 /// A submap to be spawned.
 /// <br />
 /// <br />
-/// There should be one or more grids aligned to the master grid of the map.
-/// The 0, 0 origin point.
+/// This should be a single serialized Grid.
 /// <br />
 /// <br />
 /// Everything on it will be aligned as 0, 0 as the center.
