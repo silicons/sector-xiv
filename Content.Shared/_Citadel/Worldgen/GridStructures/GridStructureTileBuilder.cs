@@ -50,6 +50,13 @@ public sealed class GridStructureTileBuilder
     /// </summary>
     public GridStructureTile Build()
     {
-        return new GridStructureTile(_weight, _north, _south, _east, _west);
+        return new GridStructureTile
+        {
+            Weight = _weight,
+            North = _north,
+            South = _south,
+            East = _east,
+            West = _west,
+        };
     }
 }

@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace Content.Shared._Citadel.Random;
@@ -7,7 +8,7 @@ namespace Content.Shared._Citadel.Random;
 /// </summary>
 /// <param name="seed"></param>
 [PublicAPI]
-public struct SplitMix64(ulong seed)
+public struct SplitMix64(ulong seed) : ICitadelRandom
 {
     private const ulong StateMagic = 0x9e3779b97f4a7c15;
 
@@ -17,6 +18,7 @@ public struct SplitMix64(ulong seed)
     /// Generates a random 64-bit integer using the SplitMix64 algorithm.
     /// </summary>
     /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ulong NextInt()
     {
         _state += StateMagic; // increment the state variable
@@ -34,8 +36,13 @@ public struct SplitMix64(ulong seed)
         return z ^ (z >> 31);
     }
 
+    public ulong Next()
+    {
+        return NextInt();
+    }
+
     /// <summary>
-    /// Generates a random floating-point number between 0 and 1 using the SplitMix64 algorithm.
+    /// Generates a random double in [0, 1) using the SplitMix64 algorithm.
     /// </summary>
     /// <returns></returns>
     public double NextFloat()

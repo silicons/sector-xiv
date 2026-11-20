@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
@@ -12,7 +13,7 @@ namespace Content.Shared._Citadel.Random;
 /// </summary>
 /// <param name="seed"></param>
 [PublicAPI]
-public struct Xoshiro256
+public struct Xoshiro256 : ICitadelRandom
 {
     [InlineArray(4)]
     public struct Xoshiro256State
@@ -40,27 +41,47 @@ public struct Xoshiro256
     /// <returns></returns>
     private static ulong _rotl(ulong x, int k)
     {
-        return (x << k) | (x >> (64 - k));
+        return BitOperations.RotateLeft(x, k);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ulong NextInt()
     {
-        var result = _rotl(_state[0] + _state[3], 23) + _state[0];
+        var s0 = _state[0];
+        var s1 = _state[1];
+        var s2 = _state[2];
+        var s3 = _state[3];
 
-        var t = _state[1] << 17;
+        var result = _rotl(s0 + s3, 23) + s0;
 
-        _state[2] ^= _state[0];
-        _state[3] ^= _state[1];
-        _state[1] ^= _state[2];
-        _state[0] ^= _state[3];
+        var t = s1 << 17;
 
-        _state[2] ^= t;
+        s2 ^= s0;
+        s3 ^= s1;
+        s1 ^= s2;
+        s0 ^= s3;
 
-        _state[3] = _rotl(_state[3], 45);
+        s2 ^= t;
+
+        s3 = _rotl(s3, 45);
+
+        _state[0] = s0;
+        _state[1] = s1;
+        _state[2] = s2;
+        _state[3] = s3;
 
         return result;
     }
 
+    public ulong Next()
+    {
+        return NextInt();
+    }
+
+    /// <summary>
+    /// Generates a random double in [0, 1).
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public double NextFloat()
     {
         return NextInt() / (double)ulong.MaxValue;
