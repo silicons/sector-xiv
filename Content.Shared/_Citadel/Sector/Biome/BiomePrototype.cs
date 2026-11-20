@@ -11,9 +11,9 @@ namespace Content.Shared._Citadel.Sector.Biome;
 /// </summary>
 [Prototype]
 [CitadelPrototype]
-public sealed class BiomePrototype : ICitadelPrototype
+public sealed partial class BiomePrototype : ICitadelPrototype
 {
     /// <inheritdoc />
     [IdDataField]
-    public string ID { get; } = default!;
+    public string ID { get; private set; } = default!;
 }

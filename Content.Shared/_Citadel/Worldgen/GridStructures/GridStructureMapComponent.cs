@@ -4,7 +4,6 @@ namespace Content.Shared._Citadel.Worldgen.GridStructures;
 /// Component that holds metadata of a grid structure piece-map
 /// </summary>
 [RegisterComponent]
-public sealed class GridStructureMapComponent
+public sealed partial class GridStructureMapComponent : Component
 {
-    [DataField("")]
 }

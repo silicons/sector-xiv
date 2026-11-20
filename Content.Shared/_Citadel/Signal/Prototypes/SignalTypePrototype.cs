@@ -15,13 +15,12 @@ namespace Content.Shared._Citadel.Signal.Prototypes;
 /// </summary>
 [Prototype]
 [CitadelPrototype]
-public sealed class SignalTypePrototype : ICitadelPrototype
+public sealed partial class SignalTypePrototype : ICitadelPrototype
 {
-    public CitadelPrototypeSync Sync { get; } = new();
 
     /// <inheritdoc />
     [IdDataField]
-    public string ID { get; } = default!;
+    public string ID { get; private set; } = default!;
 
     private void test()
     {
