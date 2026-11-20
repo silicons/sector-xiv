@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace Content.Shared._Citadel.Random;
 
 /// <summary>
-/// An implementation of the Xoshiro256** random number generator algorithm.
+/// An implementation of the Xoshiro256++ random number generator algorithm.
 /// <br />
 /// <br />
 /// TODO(silicons): Generalize this file to linear pseudorandom number generators. The polynomial terms and degrees are
@@ -51,8 +51,8 @@ public struct Xoshiro256
 
         _state[2] ^= _state[0];
         _state[3] ^= _state[1];
-        _state[0] ^= _state[2];
-        _state[1] ^= _state[3];
+        _state[1] ^= _state[2];
+        _state[0] ^= _state[3];
 
         _state[2] ^= t;
 
