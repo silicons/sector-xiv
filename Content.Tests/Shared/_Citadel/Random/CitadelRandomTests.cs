@@ -94,16 +94,83 @@ public sealed class CitadelRandomTests
     }
 
     [Test]
-    public void EqualBoundsReturnLowWithoutConsumingRandomness()
+    public void SignedBoundsIncludeLowAndExcludeHighAcrossZero()
+    {
+        // This only works with the current version; because we take
+        // two and multiply for the draw-two algorithm, this works to force a low and high value.
+        ICitadelRandom random = new ScriptedRandom(0, 0, ulong.MaxValue, ulong.MaxValue);
+        Assert.That(random.NextBoundedI64(-8, 8), Is.EqualTo(-8L));
+        Assert.That(random.NextBoundedI64(-8, 8), Is.EqualTo(7L));
+    }
+
+    [Test]
+    public void SignedBoundsHandleIntervalsWiderThanLongMaxValue()
+    {
+        // This only works with the current version; because we take
+        // two and multiply for the draw-two algorithm, this works to force a low and high value.
+        var source = new ScriptedRandom(0, 0, ulong.MaxValue, ulong.MaxValue);
+        ICitadelRandom random = source;
+        Assert.That(random.NextBoundedI64(long.MinValue, long.MaxValue), Is.EqualTo(long.MinValue));
+        Assert.That(random.NextBoundedI64(long.MinValue, long.MaxValue), Is.EqualTo(long.MaxValue - 1));
+        Assert.That(source.DrawCount, Is.EqualTo(4));
+    }
+
+    [Test]
+    public void UnsignedBoundsHandleNonzeroOffsetsAndMaximumEndpoints()
+    {
+        ICitadelRandom random =
+            new ScriptedRandom(0, 0, ulong.MaxValue, ulong.MaxValue, 0, 0, ulong.MaxValue, ulong.MaxValue);
+        Assert.That(random.NextBoundedU64(ulong.MaxValue - 2, ulong.MaxValue), Is.EqualTo(ulong.MaxValue - 2));
+        Assert.That(random.NextBoundedU64(ulong.MaxValue - 2, ulong.MaxValue), Is.EqualTo(ulong.MaxValue - 1));
+        Assert.That(random.NextBoundedU64(0, ulong.MaxValue), Is.Zero);
+        Assert.That(random.NextBoundedU64(0, ulong.MaxValue), Is.EqualTo(ulong.MaxValue - 1));
+    }
+
     {
         var source = new ScriptedRandom();
         ICitadelRandom random = source;
 
+
+    [Test]
+    public void EqualBoundsReturnLowAndConsumeTheNormalDrawCount()
+    {
+        var source = new ScriptedRandom(0, ulong.MaxValue, 0, ulong.MaxValue, 0, ulong.MaxValue);
+        ICitadelRandom random = source;
         Assert.That(random.NextBoundedI64(-7, -7), Is.EqualTo(-7L));
+        Assert.That(source.DrawCount, Is.EqualTo(2));
         Assert.That(random.NextBoundedU64(7, 7), Is.EqualTo(7UL));
+        Assert.That(source.DrawCount, Is.EqualTo(4));
         Assert.That(random.NextBoundedFloat(-7, -7), Is.EqualTo(-7f));
+        Assert.That(source.DrawCount, Is.EqualTo(5));
         Assert.That(random.NextBoundedDouble(7, 7), Is.EqualTo(7.0));
-        Assert.That(source.DrawCount, Is.Zero);
+        Assert.That(source.DrawCount, Is.EqualTo(6));
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void DifferentValidBoundsKeepGeneratorsInSync(bool useXoshiro)
+    {
+        ICitadelRandom ranged = useXoshiro ? new Xoshiro256(42) : new SplitMix64(42);
+        var equal = ranged.Clone();
+
+        for (var i = 0; i < 16; i++)
+        {
+            Assert.That(equal.NextBoundedI64(-7, -7), Is.EqualTo(-7L));
+            ranged.NextBoundedI64(-7, 8);
+            Assert.That(equal.Next(), Is.EqualTo(ranged.Next()));
+
+            Assert.That(equal.NextBoundedU64(7, 7), Is.EqualTo(7UL));
+            ranged.NextBoundedU64(7, ulong.MaxValue);
+            Assert.That(equal.Next(), Is.EqualTo(ranged.Next()));
+
+            Assert.That(equal.NextBoundedFloat(-7, -7), Is.EqualTo(-7f));
+            ranged.NextBoundedFloat(-float.MaxValue, float.MaxValue);
+            Assert.That(equal.Next(), Is.EqualTo(ranged.Next()));
+
+            Assert.That(equal.NextBoundedDouble(7, 7), Is.EqualTo(7.0));
+            ranged.NextBoundedDouble(0, double.BitIncrement(0));
+            Assert.That(equal.Next(), Is.EqualTo(ranged.Next()));
+        }
     }
 
     [Test]
