@@ -27,13 +27,11 @@ public static class CitadelRandomExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong NextBoundedUInt64(ICitadelRandom random, ulong bound)
     {
-        // floor(((high << 64) | low) * bound / 2^128), using two 64x64 products.
-        // Exactly two draws, with no rejection or division. For uniform 128-bit input, bucket counts
-        // differ by at most one; total variation from uniform is less than 2^-66 for any 64-bit bound.
-        var result = Math.BigMul(random.Next(), bound, out var middle);
-        var lowContribution = Math.BigMul(random.Next(), bound, out _);
-        var carry = (ulong)(((UInt128)middle + lowContribution) >> 64);
-        return result + carry;
+        // Algorithm based off of
+        // https://arxiv.org/pdf/1805.10941 ; algorithm 5
+
+
+
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
