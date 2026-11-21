@@ -4,7 +4,6 @@ namespace Content.Shared._Citadel.Random;
 
 /// <summary>
 /// Citadel 64-bit PRNG interface. Derived samples assume uniformly distributed output from <see cref="Next" />.
-/// Integer methods without bounds cover the full range of their return type.
 /// </summary>
 public interface ICitadelRandom : ICloneable
 {
@@ -30,7 +29,7 @@ public interface ICitadelRandom : ICloneable
     new ICitadelRandom Clone();
 
     /// <summary>
-    /// Returns a uniformly spaced double in [0, 1), using 53 random bits.
+    /// Performs a uniform draw of [low, high)
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     double NextDouble()
@@ -38,47 +37,69 @@ public interface ICitadelRandom : ICloneable
         return (Next() >> 11) * (1.0 / (1UL << 53));
     }
 
-    /// <summary>Returns a uniformly spaced float in [0, 1), using 24 random bits.</summary>
+    /// <summary>
+    /// Performs a uniform draw of [low, high)
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     float NextFloat()
     {
         return (Next() >> 40) * (1.0f / (1U << 24));
     }
 
-    /// <summary>Returns an integer over the full signed 32-bit range.</summary>
+    /// <summary>
+    /// Performs a uniform draw of [low, high)
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     int NextI32()
     {
         return unchecked((int)(Next() >> 32));
     }
 
-    /// <summary>Returns an integer over the full unsigned 32-bit range.</summary>
+    /// <summary>
+    /// Performs a uniform draw of [low, high)
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     uint NextU32()
     {
         return (uint)(Next() >> 32);
     }
 
-    /// <summary>Returns an integer over the full signed 64-bit range.</summary>
+    /// <summary>
+    /// Performs a uniform draw of [low, high)
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     long NextI64()
     {
         return unchecked((long)Next());
     }
 
-    /// <summary>Returns an integer over the full unsigned 64-bit range.</summary>
+    /// <summary>
+    /// Performs a uniform draw of [low, high)
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     ulong NextU64()
     {
         return Next();
     }
 
+    /// <summary>
+    /// Performs a uniform draw of [low, high)
+    /// <br />
+    /// <br />
+    /// This will draw from the generator twice, to produce an unbiased sample.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     Int128 NextI128()
     {
         return unchecked((Int128)NextU128());
     }
 
+    /// <summary>
+    /// Performs a uniform draw of [low, high)
+    /// <br />
+    /// <br />
+    /// This will draw from the generator twice, to produce an unbiased sample.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     UInt128 NextU128()
     {
@@ -87,6 +108,9 @@ public interface ICitadelRandom : ICloneable
 
     /// <summary>
     /// Performs a uniform draw of [low, high)
+    /// <br />
+    /// <br />
+    /// This will draw from the generator twice, to produce an unbiased sample.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     long NextBoundedI64(long low, long high)
@@ -96,6 +120,9 @@ public interface ICitadelRandom : ICloneable
 
     /// <summary>
     /// Performs a uniform draw of [low, high)
+    /// <br />
+    /// <br />
+    /// This will draw from the generator twice, to produce an unbiased sample.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     ulong NextBoundedU64(ulong low, ulong high)

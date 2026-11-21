@@ -8,6 +8,58 @@ namespace Content.Tests.Shared._Citadel.Random;
 [TestOf(typeof(ICitadelRandom))]
 public sealed class CitadelRandomTests
 {
+
+    [Test]
+    public void Typed64BitMethodsCoverTheFullSignedAndUnsignedRanges()
+    {
+        ICitadelRandom random = new ScriptedRandom(0, long.MaxValue, 1UL << 63, ulong.MaxValue, 0, ulong.MaxValue);
+
+        Assert.That(random.NextI64(), Is.Zero);
+        Assert.That(random.NextI64(), Is.EqualTo(long.MaxValue));
+        Assert.That(random.NextI64(), Is.EqualTo(long.MinValue));
+        Assert.That(random.NextI64(), Is.EqualTo(-1L));
+        Assert.That(random.NextU64(), Is.Zero);
+        Assert.That(random.NextU64(), Is.EqualTo(ulong.MaxValue));
+    }
+
+    [Test]
+    public void Typed128BitMethodsCoverTheFullSignedAndUnsignedRanges()
+    {
+        var source = new ScriptedRandom(
+            // first is high, second is low
+            0,
+            0,
+            long.MaxValue,
+            ulong.MaxValue,
+            1UL << 63,
+            0,
+            ulong.MaxValue,
+            ulong.MaxValue,
+            0,
+            0,
+            ulong.MaxValue,
+            ulong.MaxValue);
+        ICitadelRandom random = source;
+
+        Assert.That(random.NextI128(), Is.EqualTo(Int128.Zero));
+        Assert.That(random.NextI128(), Is.EqualTo(Int128.MaxValue));
+        Assert.That(random.NextI128(), Is.EqualTo(Int128.MinValue));
+        Assert.That(random.NextI128(), Is.EqualTo(-Int128.One));
+        Assert.That(random.NextU128(), Is.EqualTo(UInt128.Zero));
+        Assert.That(random.NextU128(), Is.EqualTo(UInt128.MaxValue));
+        Assert.That(source.DrawCount, Is.EqualTo(12));
+    }
+
+    [Test]
+    public void FloatUses24BitsAndExcludesOne()
+    {
+        ICitadelRandom random = new ScriptedRandom(0, 1UL << 63, ulong.MaxValue);
+
+        Assert.That(random.NextFloat(), Is.Zero);
+        Assert.That(random.NextFloat(), Is.EqualTo(0.5f));
+        Assert.That(random.NextFloat(), Is.EqualTo(float.BitDecrement(1)));
+    }
+
     [Test]
     public void EqualBoundsReturnLowWithoutConsumingRandomness()
     {

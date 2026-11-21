@@ -10,10 +10,6 @@ public static class CitadelRandomExtensions
     {
         if (low > high)
             throw new ArgumentOutOfRangeException(nameof(high), "The upper bound must be at least the lower bound.");
-        if (low == high)
-
-            return low;
-
         // Unsigned arithmetic also handles intervals spanning more than long.MaxValue values.
         var width = unchecked((ulong)high - (ulong)low);
 
@@ -25,9 +21,6 @@ public static class CitadelRandomExtensions
     {
         if (low > high)
             throw new ArgumentOutOfRangeException(nameof(high), "The upper bound must be at least the lower bound.");
-        if (low == high)
-            return low;
-
         return low + NextBoundedUInt64(random, high - low);
     }
 
@@ -47,18 +40,20 @@ public static class CitadelRandomExtensions
     internal static float NextBoundedFloat(ICitadelRandom random, float low, float high)
     {
         ValidateFloatingBounds(low, high);
+        var sample = random.NextFloat();
 
         // ReSharper disable once CompareOfFloatsByEqualityOperator
-        return low == high ? low : ScaleFloating(low, high, random.NextFloat());
+        return low == high ? low : ScaleFloating(low, high, sample);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static double NextBoundedDouble(ICitadelRandom random, double low, double high)
     {
         ValidateFloatingBounds(low, high);
+        var sample = random.NextDouble();
 
         // ReSharper disable once CompareOfFloatsByEqualityOperator
-        return low == high ? low : ScaleFloating(low, high, random.NextDouble());
+        return low == high ? low : ScaleFloating(low, high, sample);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
