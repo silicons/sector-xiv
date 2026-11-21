@@ -1,13 +1,15 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
 using Content.Shared._Citadel.Random;
+using Robust.Shared.Analyzers;
 
 namespace Content.Benchmarks._Citadel;
 
 [MemoryDiagnoser]
 [CategoriesColumn]
 [GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
-public sealed class CitadelRandomExtensionsBenchmark
+[Virtual]
+public class CitadelRandomExtensionsBenchmark
 {
     private const int BatchSize = 1024;
     private double _lowDouble, _highDouble;
