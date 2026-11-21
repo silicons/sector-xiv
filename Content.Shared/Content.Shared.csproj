@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <Folder Include="_Citadel\Sector\"/>
-    <Folder Include="_Citadel\_Example\"/>
   </ItemGroup>
 
   <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets"/>
