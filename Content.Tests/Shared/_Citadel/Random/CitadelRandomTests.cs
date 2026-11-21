@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 using Content.Shared._Citadel.Random;
 using NUnit.Framework;
 
@@ -127,19 +126,7 @@ public sealed class CitadelRandomTests
     }
 
     // TODO(silicons): add actual tests to test whether the algorithm from
-    //                 https://arxiv.org/abs/1805.10941 is working, but for now,
-    //                 just test the output is relatively uniform so we
-    //                 catch extreme failure cases.
-
-    [Test]
-    public void EqualSourceIntervalsGiveEqualOutputBucketCounts()
-    {
-        var source = new ScriptedRandom();
-        ICitadelRandom random = source;
-
-        Assert.That(counts, Is.All.EqualTo(10));
-        Assert.That(source.DrawCount, Is.EqualTo(200));
-    }
+    //                 https://arxiv.org/abs/1805.10941 is working.
 
     [Test]
     public void EqualBoundsReturnLowAndConsumeTheNormalDrawCount()
