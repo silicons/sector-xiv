@@ -5,5 +5,5 @@ namespace Content.Shared._Citadel.Worldgen.Submap;
 
 public sealed class SubmapToken : Fixture
 {
-    private SubmapPrototype Submap { get; }
+    public required SubmapPrototype Submap { get; init; }
 }

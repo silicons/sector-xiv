@@ -15,5 +15,6 @@ public sealed class WorldGenerator
     public Task<WorldgenOutput> Generate(WorldgenRequest request, CancellationToken cancellationToken)
     {
 #warning impl
+        throw new NotImplementedException();
     }
 }

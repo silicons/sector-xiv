@@ -9,4 +9,22 @@ public sealed partial class DamageSpecifier : IEquatable<DamageSpecifier>, IRobu
 
     public DamageFlags FlagsAdded;
     public DamageFlags FlagsRemoved;
+
+    public bool Equals(DamageSpecifier? other)
+    {
+        return other is not null
+            && Amount.Equals(other.Amount)
+            && FlagsAdded == other.FlagsAdded
+            && FlagsRemoved == other.FlagsRemoved;
+    }
+
+    public DamageSpecifier Clone()
+    {
+        return new DamageSpecifier
+        {
+            Amount = Amount,
+            FlagsAdded = FlagsAdded,
+            FlagsRemoved = FlagsRemoved,
+        };
+    }
 }

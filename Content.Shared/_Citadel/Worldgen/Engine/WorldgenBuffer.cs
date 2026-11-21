@@ -18,7 +18,7 @@ public sealed class WorldgenBuffer
     /// <br />
     /// Fixtures are larger objects that should block other fixtures from being placed in the same place.
     /// </summary>
-    private PhysicalPlacements _fixtures = new();
+    private PhysicalPlacements<Fixture> _fixtures = new();
 
     /// <summary>
     /// Placed 'spots'
@@ -26,7 +26,7 @@ public sealed class WorldgenBuffer
     /// <br />
     /// Spots are smaller objects.
     /// </summary>
-    private PhysicalPlacements _spots = new();
+    private PhysicalPlacements<Spot> _spots = new();
 
     private struct Positioned<T>(T token, Vector2d pos) where T : WorldgenToken
     {

@@ -4,9 +4,7 @@ namespace Content.Shared._Citadel.Worldgen.GridStructures;
 
 public sealed class GridStructureBuilder
 {
-    {
 #warning impl
-    }
 }
 
 /// <summary>
