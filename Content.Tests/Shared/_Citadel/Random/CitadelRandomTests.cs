@@ -171,6 +171,30 @@ public sealed class CitadelRandomTests
     }
 
     [Test]
+    public void BoundedBiasCheck()
+    {
+        ICitadelRandom random = new SplitMix64(46);
+        var counts = new uint[64];
+
+        const ulong iterations = 10_000_000;
+        for (ulong i = 0; i < iterations; i++)
+        {
+            var val = random.NextBoundedU64(0, 64);
+            counts[val]++;
+        }
+
+        for (var i = 0; i < counts.Length; i++)
+        {
+            var expected = iterations / (ulong)counts.Length;
+            var actual = counts[i];
+            var ratio = (double)actual / expected;
+            Assert.That(ratio,
+                Is.InRange(0.99, 1.01),
+                $"Value {i} is outside of the expected range. Expected {expected}, got {actual}.");
+        }
+    }
+
+    [Test]
     public void ReversedBoundsThrowWithoutConsumingRandomness()
     {
         var source = new ScriptedRandom();
