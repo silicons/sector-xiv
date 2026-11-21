@@ -30,8 +30,40 @@ public static class CitadelRandomExtensions
         // Algorithm based off of
         // https://arxiv.org/pdf/1805.10941 ; algorithm 5
 
+        // Let L = 64
+        // Let s = bound
 
+        // x ← random integer in [0, 2^L)
+        var raw = random.Next();
 
+        // fast path: power of 2
+        if (BitOperations.IsPow2(bound))
+            return raw & (bound - 1);
+
+        // m ← x * s
+        var product = (UInt128)raw * bound;
+        // l ← m mod 2^L
+        var low = ulong.CreateTruncating(product);
+
+        // if l < s then
+        if (low < bound)
+        {
+            // t ← (2^L - s) mod s
+            var threshold = unchecked((ulong.MaxValue - bound) % bound);
+            // while l < t do
+            while (low < threshold)
+            {
+                // x ← random integer in [0, 2^L)
+                raw = random.Next();
+                // m ← x * s
+                product = (UInt128)raw * bound;
+                // l ← m mod 2^L
+                low = ulong.CreateTruncating(product);
+            }
+        }
+
+        // return m / 2^L
+        return ulong.CreateTruncating(product >> 64);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
