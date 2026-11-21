@@ -13,7 +13,7 @@ public static class CitadelRandomExtensions
         // Unsigned arithmetic also handles intervals spanning more than long.MaxValue values.
         var width = unchecked((ulong)high - (ulong)low);
 
-        return unchecked((long)((ulong)low + NextBoundedUInt64(random, width)));
+        return unchecked((long)((ulong)low + NextBoundedU64(random, width)));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -21,11 +21,11 @@ public static class CitadelRandomExtensions
     {
         if (low > high)
             throw new ArgumentOutOfRangeException(nameof(high), "The upper bound must be at least the lower bound.");
-        return low + NextBoundedUInt64(random, high - low);
+        return low + NextBoundedU64(random, high - low);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong NextBoundedUInt64(ICitadelRandom random, ulong bound)
+    private static ulong NextBoundedU64(ICitadelRandom random, ulong bound)
     {
         // Algorithm based off of
         // https://arxiv.org/pdf/1805.10941 ; algorithm 5
