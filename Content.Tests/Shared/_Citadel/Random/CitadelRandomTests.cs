@@ -1,13 +1,46 @@
 using System;
+using System.Numerics;
 using Content.Shared._Citadel.Random;
 using NUnit.Framework;
 
 namespace Content.Tests.Shared._Citadel.Random;
 
+/// <summary>
+/// These tests are specific to the implementation as of right now,
+/// unfortunately. So, something like 'test 32 bit'
+/// assumes scaling happens by extracting the top 32 bits.
+/// <br />
+/// <br />
+/// That isn't ideal for an interface tests, but.. whatever.
+/// </summary>
 [TestFixture]
 [TestOf(typeof(ICitadelRandom))]
 public sealed class CitadelRandomTests
 {
+    [Test]
+    public void Typed32BitMethodsCoverTheFullSignedAndUnsignedRanges()
+    {
+        // right now, citadel random takes
+        // the upper 32 bits for i32/u32.
+        ICitadelRandom random = new ScriptedRandom(
+            0,
+            0x7FFFFFFF00000000,
+            0x8000000000000000,
+            ulong.MaxValue,
+            0,
+            0x7FFFFFFF00000000,
+            0x8000000000000000,
+            ulong.MaxValue);
+
+        Assert.That(random.NextI32(), Is.Zero);
+        Assert.That(random.NextI32(), Is.EqualTo(int.MaxValue));
+        Assert.That(random.NextI32(), Is.EqualTo(int.MinValue));
+        Assert.That(random.NextI32(), Is.EqualTo(-1));
+        Assert.That(random.NextU32(), Is.Zero);
+        Assert.That(random.NextU32(), Is.EqualTo((uint)int.MaxValue));
+        Assert.That(random.NextU32(), Is.EqualTo(1U << 31));
+        Assert.That(random.NextU32(), Is.EqualTo(uint.MaxValue));
+    }
 
     [Test]
     public void Typed64BitMethodsCoverTheFullSignedAndUnsignedRanges()
