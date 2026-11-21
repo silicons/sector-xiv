@@ -49,7 +49,7 @@ public static class CitadelRandomExtensions
         if (low < bound)
         {
             // t ← (2^L - s) mod s
-            var threshold = unchecked((ulong.MaxValue - bound) % bound);
+            var threshold = unchecked(0UL - bound) % bound;
             // while l < t do
             while (low < threshold)
             {
