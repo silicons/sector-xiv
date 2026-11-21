@@ -126,10 +126,20 @@ public sealed class CitadelRandomTests
         Assert.That(random.NextBoundedU64(0, ulong.MaxValue), Is.EqualTo(ulong.MaxValue - 1));
     }
 
+    // TODO(silicons): add actual tests to test whether the algorithm from
+    //                 https://arxiv.org/abs/1805.10941 is working, but for now,
+    //                 just test the output is relatively uniform so we
+    //                 catch extreme failure cases.
+
+    [Test]
+    public void EqualSourceIntervalsGiveEqualOutputBucketCounts()
     {
         var source = new ScriptedRandom();
         ICitadelRandom random = source;
 
+        Assert.That(counts, Is.All.EqualTo(10));
+        Assert.That(source.DrawCount, Is.EqualTo(200));
+    }
 
     [Test]
     public void EqualBoundsReturnLowAndConsumeTheNormalDrawCount()
