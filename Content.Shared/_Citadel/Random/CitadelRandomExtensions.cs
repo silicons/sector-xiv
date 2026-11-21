@@ -17,7 +17,7 @@ public static class CitadelRandomExtensions
         // Unsigned arithmetic also handles intervals spanning more than long.MaxValue values.
         var width = unchecked((ulong)high - (ulong)low);
 
-        return unchecked((long)((ulong)low + NextFixedBoundedUInt64(random, width)));
+        return unchecked((long)((ulong)low + NextBoundedUInt64(random, width)));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -28,11 +28,11 @@ public static class CitadelRandomExtensions
         if (low == high)
             return low;
 
-        return low + NextFixedBoundedUInt64(random, high - low);
+        return low + NextBoundedUInt64(random, high - low);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong NextFixedBoundedUInt64(ICitadelRandom random, ulong bound)
+    private static ulong NextBoundedUInt64(ICitadelRandom random, ulong bound)
     {
         // floor(((high << 64) | low) * bound / 2^128), using two 64x64 products.
         // Exactly two draws, with no rejection or division. For uniform 128-bit input, bucket counts
@@ -86,38 +86,5 @@ public static class CitadelRandomExtensions
 
         // Scaling can round to high, preserve exclusive upper bound semantics
         return value >= high ? T.BitDecrement(high) : value;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong NextBoundedUInt64(ICitadelRandom random, ulong bound)
-    {
-        if (BitOperations.IsPow2(bound))
-            return random.Next() & (bound - 1);
-
-        // Large bounds accept at least half of all inputs; direct rejection needs no division or multiply.
-        if (bound > long.MaxValue)
-        {
-            ulong value;
-            do
-            {
-                value = random.Next();
-            } while (value >= bound);
-
-            return value;
-        }
-
-        // Lemire's multiply-high reduction. Division is needed only on the rare rejection path.
-        // https://arxiv.org/abs/1805.10941
-        var result = Math.BigMul(bound, random.Next(), out var low);
-        if (low < bound)
-        {
-            var threshold = unchecked(0UL - bound) % bound;
-            while (low < threshold)
-            {
-                result = Math.BigMul(bound, random.Next(), out low);
-            }
-        }
-
-        return result;
     }
 }
