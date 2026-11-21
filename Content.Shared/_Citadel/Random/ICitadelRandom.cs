@@ -110,7 +110,7 @@ public interface ICitadelRandom : ICloneable
     /// Performs a uniform draw of [low, high)
     /// <br />
     /// <br />
-    /// This will draw from the generator twice, to produce an unbiased sample.
+    /// This will draw from the generator an arbitrary number of times, to produce an unbiased sample.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     long NextBoundedI64(long low, long high)
@@ -122,7 +122,7 @@ public interface ICitadelRandom : ICloneable
     /// Performs a uniform draw of [low, high)
     /// <br />
     /// <br />
-    /// This will draw from the generator twice, to produce an unbiased sample.
+    /// This will draw from the generator an arbitrary number of times, to produce an unbiased sample.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     ulong NextBoundedU64(ulong low, ulong high)
