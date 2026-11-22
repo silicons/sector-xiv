@@ -27,19 +27,16 @@ public sealed class Xoshiro256 : ICitadelRandom
     {
         var splitMix = new SplitMix64(seed);
 
-        for (var i = 0; i < 4; i++)
-        {
-            _state[i] = splitMix.Next();
-        }
+        _state = new Xoshiro256State(splitMix.Next(), splitMix.Next(), splitMix.Next(), splitMix.Next());
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ulong Next()
     {
-        var s0 = _state[0];
-        var s1 = _state[1];
-        var s2 = _state[2];
-        var s3 = _state[3];
+        var s0 = _state.V1;
+        var s1 = _state.V2;
+        var s2 = _state.V3;
+        var s3 = _state.V4;
 
         var result = _rotl(s0 + s3, 23) + s0;
 
@@ -54,12 +51,17 @@ public sealed class Xoshiro256 : ICitadelRandom
 
         s3 = _rotl(s3, 45);
 
-        _state[0] = s0;
-        _state[1] = s1;
-        _state[2] = s2;
-        _state[3] = s3;
+        _state.V1 = s0;
+        _state.V2 = s1;
+        _state.V3 = s2;
+        _state.V4 = s3;
 
         return result;
+    }
+
+    ICitadelRandom ICitadelRandom.Clone()
+    {
+        return Clone();
     }
 
     /// <summary>
@@ -82,19 +84,13 @@ public sealed class Xoshiro256 : ICitadelRandom
         return (Xoshiro256)MemberwiseClone();
     }
 
-    ICitadelRandom ICitadelRandom.Clone()
-    {
-        return Clone();
-    }
-
     private static Xoshiro256State CreateStateJumpMagic()
     {
-        var stateJumpMagic = new Xoshiro256State();
-        stateJumpMagic[0] = 0x180ec6d33cfd0aba;
-        stateJumpMagic[1] = 0xd5a61266f0c9392c;
-        stateJumpMagic[2] = 0xa9582618e03fc9aa;
-        stateJumpMagic[3] = 0x39abdc4529b1661c;
-        return stateJumpMagic;
+        return new Xoshiro256State(
+            0x180ec6d33cfd0aba,
+            0xd5a61266f0c9392c,
+            0xa9582618e03fc9aa,
+            0x39abdc4529b1661c);
     }
 
     /// <summary>
@@ -108,12 +104,11 @@ public sealed class Xoshiro256 : ICitadelRandom
 
     private static Xoshiro256State CreateStateLongJumpMagic()
     {
-        var stateLongJumpMagic = new Xoshiro256State();
-        stateLongJumpMagic[0] = 0x76e15d3efefdcbbf;
-        stateLongJumpMagic[1] = 0xc5004e441c522fb3;
-        stateLongJumpMagic[2] = 0x77710069854ee241;
-        stateLongJumpMagic[3] = 0x39109bb02acbe635;
-        return stateLongJumpMagic;
+        return new Xoshiro256State(
+            0x76e15d3efefdcbbf,
+            0xc5004e441c522fb3,
+            0x77710069854ee241,
+            0x39109bb02acbe635);
     }
 
     /// <summary>
@@ -126,105 +121,69 @@ public sealed class Xoshiro256 : ICitadelRandom
 
     private void JumpImpl(in Xoshiro256State jumpMagic)
     {
-        var newState = new Xoshiro256State();
-        newState[0] = 0;
-        newState[1] = 0;
-        newState[2] = 0;
-        newState[3] = 0;
-
-        for (var i = 0; i < 4; i++)
-        {
-            for (var b = 0; b < 64; b++)
-            {
-                if ((jumpMagic[i] & (1UL << b)) != 0)
-                {
-                    newState[0] ^= _state[0];
-                    newState[1] ^= _state[1];
-                    newState[2] ^= _state[2];
-                    newState[3] ^= _state[3];
-                }
-
-                Next();
-            }
-        }
-
-        for (var i = 0; i < 4; i++)
-        {
-            _state[i] = newState[i];
-        }
+        ApplyJumpPolynomial(jumpMagic);
     }
 
     private static Xoshiro256State CreateCharacteristicPolynomial()
     {
-        var characteristicPolynomial = new Xoshiro256State();
-        characteristicPolynomial[0] = 0x9d116f2bb0f0f001;
-        characteristicPolynomial[1] = 0x0280002bcefd1a5e;
-        characteristicPolynomial[2] = 0x04b4edcf26259f85;
-        characteristicPolynomial[3] = 0x0003c03c3f3ecb19;
-        return characteristicPolynomial;
+        return new Xoshiro256State(
+            0x9d116f2bb0f0f001,
+            0x0280002bcefd1a5e,
+            0x04b4edcf26259f85,
+            0x0003c03c3f3ecb19);
     }
 
     // ReSharper disable once IdentifierTypo
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void F2X_mulx(ref Xoshiro256State state)
     {
-        ulong carry = 0;
-        for (var i = 0; i < 4; i++)
-        {
-            var nextCarry = state[i] >> 63;
-            state[i] = (state[i] << 1) | carry;
-            carry = nextCarry;
-        }
+        var carry = state.V4 >> 63;
+        state.V4 = (state.V4 << 1) | (state.V3 >> 63);
+        state.V3 = (state.V3 << 1) | (state.V2 >> 63);
+        state.V2 = (state.V2 << 1) | (state.V1 >> 63);
+        state.V1 <<= 1;
 
-        var top = (int)carry;
-
-        if (top != 0)
+        if (carry != 0)
         {
-            for (var i = 0; i < 4; i++)
-            {
-                state[i] ^= CharacteristicPolynomial[i];
-            }
+            state.V1 ^= CharacteristicPolynomial.V1;
+            state.V2 ^= CharacteristicPolynomial.V2;
+            state.V3 ^= CharacteristicPolynomial.V3;
+            state.V4 ^= CharacteristicPolynomial.V4;
         }
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     private static void F2X_mulmod(ref Xoshiro256State a, in Xoshiro256State b)
     {
         var r = new Xoshiro256State();
-        r[0] = 0;
-        r[1] = 0;
-        r[2] = 0;
-        r[3] = 0;
+        F2X_mulmodWord(a.V4, b, ref r);
+        F2X_mulmodWord(a.V3, b, ref r);
+        F2X_mulmodWord(a.V2, b, ref r);
+        F2X_mulmodWord(a.V1, b, ref r);
+        a = r;
+    }
 
-        for (var k = 255; k >= 0; k--)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void F2X_mulmodWord(ulong word, in Xoshiro256State b, ref Xoshiro256State result)
+    {
+        for (var bit = 63; bit >= 0; bit--)
         {
-            F2X_mulx(ref r);
-            if (((a[k >> 6] >> (k & 63)) & 1) != 0)
+            F2X_mulx(ref result);
+            if (((word >> bit) & 1) != 0)
             {
-                for (var i = 0; i < 4; i++)
-                {
-                    r[i] ^= b[i];
-                }
+                result.V1 ^= b.V1;
+                result.V2 ^= b.V2;
+                result.V3 ^= b.V3;
+                result.V4 ^= b.V4;
             }
-        }
-
-        for (var i = 0; i < 4; i++)
-        {
-            a[i] = r[i];
         }
     }
 
     private static void F2X_jumpPolyCE(ulong c, uint e, ref Xoshiro256State result)
     {
-        result[0] = 1;
-        result[1] = 0;
-        result[2] = 0;
-        result[3] = 0;
+        result = new Xoshiro256State(1, 0, 0, 0);
 
-        for (var k = 63; k >= 0; k--)
-        {
-            F2X_mulmod(ref result, result);
-            if (((c >> k) & 1) != 0)
-                F2X_mulx(ref result);
-        }
+        F2X_jumpPolyWord(c, ref result);
 
         while (e-- > 0)
         {
@@ -234,50 +193,49 @@ public sealed class Xoshiro256 : ICitadelRandom
 
     private static Xoshiro256State F2X_jumpPolyN(in Xoshiro256State jump)
     {
-        var result = new Xoshiro256State();
+        var result = new Xoshiro256State(1, 0, 0, 0);
+        F2X_jumpPolyWord(jump.V4, ref result);
+        F2X_jumpPolyWord(jump.V3, ref result);
+        F2X_jumpPolyWord(jump.V2, ref result);
+        F2X_jumpPolyWord(jump.V1, ref result);
+        return result;
+    }
 
-        result[0] = 1;
-        result[1] = 0;
-        result[2] = 0;
-        result[3] = 0;
-
-        for (var k = 255; k >= 0; k--)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void F2X_jumpPolyWord(ulong word, ref Xoshiro256State result)
+    {
+        for (var bit = 63; bit >= 0; bit--)
         {
             F2X_mulmod(ref result, result);
-            if (((jump[k >> 6] >> (k & 63)) & 1) != 0)
+            if (((word >> bit) & 1) != 0)
                 F2X_mulx(ref result);
         }
-
-        return result;
     }
 
     private void ApplyJumpPolynomial(in Xoshiro256State poly)
     {
         var newState = new Xoshiro256State();
-        newState[0] = 0;
-        newState[1] = 0;
-        newState[2] = 0;
-        newState[3] = 0;
+        AccumulateJumpWord(poly.V1, ref newState);
+        AccumulateJumpWord(poly.V2, ref newState);
+        AccumulateJumpWord(poly.V3, ref newState);
+        AccumulateJumpWord(poly.V4, ref newState);
+        _state = newState;
+    }
 
-        for (var i = 0; i < 4; i++)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void AccumulateJumpWord(ulong word, ref Xoshiro256State result)
+    {
+        for (var bit = 0; bit < 64; bit++)
         {
-            for (var b = 0; b < 64; b++)
+            if ((word & (1UL << bit)) != 0)
             {
-                if ((poly[i] & (1UL << b)) != 0)
-                {
-                    newState[0] ^= _state[0];
-                    newState[1] ^= _state[1];
-                    newState[2] ^= _state[2];
-                    newState[3] ^= _state[3];
-                }
-
-                Next();
+                result.V1 ^= _state.V1;
+                result.V2 ^= _state.V2;
+                result.V3 ^= _state.V3;
+                result.V4 ^= _state.V4;
             }
-        }
 
-        for (var i = 0; i < 4; i++)
-        {
-            _state[i] = newState[i];
+            Next();
         }
     }
 
@@ -296,7 +254,7 @@ public sealed class Xoshiro256 : ICitadelRandom
 
     /// <summary>
     /// General arbitrary-jump function; Jumps forwards by
-    /// n = jump[0] + jump[1] * 2^64 + ... positions.
+    /// n = a + b * 2^64 + c * 2^128 + d * 2^192 positions.
     /// </summary>
     /// <param name="a"></param>
     /// <param name="b"></param>
@@ -304,19 +262,17 @@ public sealed class Xoshiro256 : ICitadelRandom
     /// <param name="d"></param>
     public void JumpN(ulong a, ulong b, ulong c, ulong d)
     {
-        var jump = new Xoshiro256State();
-        jump[0] = a;
-        jump[1] = b;
-        jump[2] = c;
-        jump[3] = d;
+        var jump = new Xoshiro256State(a, b, c, d);
 
         var poly = F2X_jumpPolyN(jump);
         ApplyJumpPolynomial(poly);
     }
 
-    [InlineArray(4)]
-    public struct Xoshiro256State
+    public struct Xoshiro256State(ulong v1, ulong v2, ulong v3, ulong v4)
     {
-        public ulong value;
+        public ulong V1 = v1;
+        public ulong V2 = v2;
+        public ulong V3 = v3;
+        public ulong V4 = v4;
     }
 }
