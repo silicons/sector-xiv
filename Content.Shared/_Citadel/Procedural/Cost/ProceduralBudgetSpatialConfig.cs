@@ -8,7 +8,7 @@ namespace Content.Shared._Citadel.Procedural.Cost;
 /// and then do the same 100 cost for 10_000 x 10_000 tiles.
 /// <br />
 /// <br />
-/// This config type scales to volume.
+/// This config type scales to area.
 /// </summary>
 public sealed class ProceduralBudgetSpatialConfig<TKey> : AbstractProceduralBudgetConfig<TKey>
     where TKey : IEquatable<TKey>, IComparable<TKey>
@@ -17,7 +17,7 @@ public sealed class ProceduralBudgetSpatialConfig<TKey> : AbstractProceduralBudg
     /// Input boxes are treated as a 2D area with dimension of meters.
     /// <br />
     /// <br />
-    /// This is how much budget to add per meter.
+    /// This is how much budget to add per square meter.
     /// </summary>
     public Dictionary<TKey, double> BudgetsPerSquareMeter = new();
 
@@ -28,8 +28,7 @@ public sealed class ProceduralBudgetSpatialConfig<TKey> : AbstractProceduralBudg
     /// <returns></returns>
     public ProceduralBudget<TKey> CreateBudget(Box2 bounds)
     {
-        var budget = CreateBaseBudget();
-#warning impl
+        return CreateBudgetForArea(GetArea(bounds));
     }
 
     public ProceduralBudget<TKey> CreateBudget(IEnumerable<Box2> bounds)
@@ -43,8 +42,14 @@ public sealed class ProceduralBudgetSpatialConfig<TKey> : AbstractProceduralBudg
 #warning impl
     }
 
-    private double GetBudgetForArea(TKey key, double squareMeters)
+    private static double GetArea(Box2 bounds)
     {
-#warning impl
+        var width = Math.Abs((double)bounds.Right - bounds.Left);
+        var height = Math.Abs((double)bounds.Top - bounds.Bottom);
+        var area = width * height;
+        if (!double.IsFinite(area))
+            throw new ArgumentOutOfRangeException(nameof(bounds), "Box area must be finite.");
+
+        return area;
     }
 }
