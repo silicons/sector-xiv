@@ -31,6 +31,9 @@ public sealed class ProceduralBudgetSpatialConfig<TKey> : AbstractProceduralBudg
         return CreateBudgetForArea(GetArea(bounds));
     }
 
+    /// <summary>
+    /// Overlaps will not be deduped.
+    /// </summary>
     public ProceduralBudget<TKey> CreateBudget(IEnumerable<Box2> bounds)
     {
         var budget = CreateBaseBudget();
