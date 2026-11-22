@@ -36,13 +36,38 @@ public sealed class ProceduralBudgetSpatialConfig<TKey> : AbstractProceduralBudg
     /// </summary>
     public ProceduralBudget<TKey> CreateBudget(IEnumerable<Box2> bounds)
     {
-        var budget = CreateBaseBudget();
-#warning impl
+        ArgumentNullException.ThrowIfNull(bounds);
+
+        var squareMeters = 0.0;
+        foreach (var box in bounds)
+        {
+            squareMeters += GetArea(box);
+        }
+
+        return CreateBudgetForArea(squareMeters);
     }
 
-    private double GetBudgetForArea(TKey key, Box2 bounds)
+    private ProceduralBudget<TKey> CreateBudgetForArea(double squareMeters)
     {
-#warning impl
+        if (!double.IsFinite(squareMeters))
+            throw new ArgumentOutOfRangeException(nameof(squareMeters), "Area must be finite.");
+
+        var budget = CreateBaseBudget();
+        foreach (var (key, rate) in BudgetsPerSquareMeter)
+        {
+            if (!double.IsFinite(rate) || rate < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(BudgetsPerSquareMeter),
+                    "Budget rates must be finite and nonnegative.");
+            }
+
+            // prevent wraparound, force checked
+            var scaled = checked((long)Math.Floor(rate * squareMeters));
+            budget.Budget.TryGetValue(key, out var remaining);
+            budget.Budget[key] = checked(remaining + scaled);
+        }
+
+        return budget;
     }
 
     private static double GetArea(Box2 bounds)
